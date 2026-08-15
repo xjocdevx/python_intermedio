@@ -1,429 +1,767 @@
-### Día 1	Estructuras de Datos Avanzadas y Funciones
-### Ejercicios:  ESTRUCTURAS DE DATOS AVANZADAS Y FUNCIONE
-```python
 ### DÍA 1: ESTRUCTURAS DE DATOS AVANZADAS Y FUNCIONES
-### OBJETIVO: Dominar list comprehensions, slicing, sets, diccionarios, defaultdict, decoradores y funciones con argumentos variables.
-EJERCICIO 1.1: List Comprehensions y Slicing
-python
-"""
-EJERCICIO 1.1: LIST COMPREHENSIONS Y SLICING
-ESENCIA: Crear listas de forma eficiente y extraer subconjuntos
-"""
-```
-### LIST COMPREHENSION BÁSICA
+### OBJETIVO: Aplicar POO para manejar list comprehensions, slicing, sets, diccionarios, defaultdict, decoradores y funciones con argumentos variables.
+### EJERCICIO 1.1: Sistema de Inventario con List Comprehensions y Slicing
 ```python
-### ============================================
-### 1. LIST COMPREHENSION BÁSICA
-## ============================================
-# Sintaxis: [expresion for elemento in iterable]
-numeros = [1, 2, 3, 4, 5]
-cuadrados = [x**2 for x in numeros]
-print(f"Cuadrados: {cuadrados}")  # [1, 4, 9, 16, 25]
-```
-Ejercicios: LIST COMPREHENSION CON CONDICIÓN
-```python
-# ============================================
-# 2. LIST COMPREHENSION CON CONDICIÓN
-# ============================================
-# Sintaxis: [expresion for elemento in iterable if condición]
-pares = [x for x in numeros if x % 2 == 0]
-print(f"Números pares: {pares}")  # [2, 4]
-
-# Con operación y condición
-pares_cuadrado = [x**2 for x in numeros if x % 2 == 0]
-print(f"Cuadrado de pares: {pares_cuadrado}")  # [4, 16]
-```
-Ejercicio: LIST COMPREHENSION ANIDADA
-```python
-# ============================================
-# 3. LIST COMPREHENSION ANIDADA
-# ============================================
-matriz = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-# Aplanar matriz
-aplanada = [num for fila in matriz for num in fila]
-print(f"Matriz aplanada: {aplanada}")  # [1, 2, 3, 4, 5, 6, 7, 8, 9]
-```
-Ejercicio SLICING (REBANADO)
-```python
-# ============================================
-# 4. SLICING (REBANADO)
-# ============================================
-# Sintaxis: lista[inicio:fin:paso]
-lista = [10, 20, 30, 40, 50, 60, 70, 80, 90]
-
-print(f"Original: {lista}")
-print(f"Primeros 3: {lista[:3]}")      # [10, 20, 30]
-print(f"Últimos 3: {lista[-3:]}")      # [70, 80, 90]
-print(f"Posiciones 2-5: {lista[2:6]}") # [30, 40, 50, 60]
-print(f"Cada 2 elementos: {lista[::2]}") # [10, 30, 50, 70, 90]
-print(f"Invertir lista: {lista[::-1]}")  # [90, 80, 70, 60, 50, 40, 30, 20, 10]
-```
-Ejercicio SLICING EN STRINGS
-```python
-# ============================================
-# 5. SLICING EN STRINGS
-# ============================================
-texto = "Python Intermedio"
-print(f"Primeros 6: {texto[:6]}")      # Python
-print(f"Últimos 10: {texto[-10:]}")     # Intermedio
-print(f"Texto invertido: {texto[::-1]}") # oidemretnI nohtyP
-```
-Ejercicio: 6
-```python
-# ============================================
-# 6. EJERCICIO PRÁCTICO: PROCESAMIENTO DE DATOS
-# ============================================
-ventas = [1200, 1500, 800, 2000, 950, 1800, 600]
-
-# Filtrar ventas mayores a 1000
-ventas_altas = [v for v in ventas if v > 1000]
-print(f"Ventas > 1000: {ventas_altas}")  # [1200, 1500, 2000, 1800]
-
-# Aplicar descuento del 10% a ventas altas
-ventas_con_descuento = [v * 0.9 if v > 1000 else v for v in ventas]
-print(f"Con descuento: {ventas_con_descuento}")
-
-# Obtener top 3 ventas
-top_3 = sorted(ventas, reverse=True)[:3]
-print(f"Top 3 ventas: {top_3}")  # [2000, 1800, 1500]
-EJERCICIO 1.2: Tuplas, Desempaquetado y Sets
-python
 """
-EJERCICIO 1.2: TUPLAS, DESEMPAQUETADO Y SETS
-ESENCIA: Estructuras inmutables y operaciones de conjuntos
+EJERCICIO 1.1: SISTEMA DE INVENTARIO CON POO
+ESENCIA: Clase que maneja productos usando list comprehensions y slicing
 """
 
-# ============================================
-# 1. TUPLAS Y DESEMPAQUETADO
-# ============================================
-# Crear tupla
-coordenadas = (10, 20, 30)
-print(f"Tupla: {coordenadas}")
+from typing import List, Optional
 
-# Desempaquetado básico
-x, y, z = coordenadas
-print(f"x={x}, y={y}, z={z}")
+class Producto:
+    """Representa un producto del inventario"""
+    
+    def __init__(self, id: int, nombre: str, precio: float, stock: int):
+        self.id = id
+        self.nombre = nombre
+        self.precio = precio
+        self.stock = stock
+    
+    def valor_total(self) -> float:
+        """Calcula el valor total del stock"""
+        return self.precio * self.stock
+    
+    def __str__(self):
+        return f"{self.nombre} (${self.precio}) - Stock: {self.stock}"
 
-# Desempaquetado con * (resto de elementos)
-numeros = (1, 2, 3, 4, 5)
-primero, *resto = numeros
-print(f"Primero: {primero}, Resto: {resto}")  # 1, [2, 3, 4, 5]
-
-*inicio, ultimo = numeros
-print(f"Inicio: {inicio}, Último: {ultimo}")  # [1, 2, 3, 4], 5
-
-# Intercambio de variables usando tuplas
-a, b = 5, 10
-print(f"Antes: a={a}, b={b}")
-a, b = b, a  # Intercambio mágico
-print(f"Después: a={a}, b={b}")
-
-# ============================================
-# 2. SETS - CONJUNTOS
-# ============================================
-# Crear sets
-set_a = {1, 2, 3, 4, 5}
-set_b = {4, 5, 6, 7, 8}
-print(f"Set A: {set_a}")
-print(f"Set B: {set_b}")
-
-# OPERACIONES DE CONJUNTOS
-# Unión: elementos en A o B
-union = set_a | set_b
-print(f"Unión: {union}")  # {1, 2, 3, 4, 5, 6, 7, 8}
-
-# Intersección: elementos en A y B
-interseccion = set_a & set_b
-print(f"Intersección: {interseccion}")  # {4, 5}
-
-# Diferencia: elementos en A pero no en B
-diferencia = set_a - set_b
-print(f"Diferencia (A - B): {diferencia}")  # {1, 2, 3}
-
-# Diferencia simétrica: en A o B pero no en ambos
-dif_simetrica = set_a ^ set_b
-print(f"Diferencia simétrica: {dif_simetrica}")  # {1, 2, 3, 6, 7, 8}
-
-# ============================================
-# 3. ELIMINAR DUPLICADOS CON SET
-# ============================================
-lista_duplicados = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
-unicos = list(set(lista_duplicados))
-print(f"Original: {lista_duplicados}")
-print(f"Sin duplicados: {unicos}")  # [1, 2, 3, 4]
-
-# ============================================
-# 4. EJERCICIO PRÁCTICO: ANÁLISIS DE TEXTOS
-# ============================================
-texto = "python es genial python es fácil python es poderoso"
-palabras = texto.split()
-palabras_unicas = set(palabras)
-
-print(f"Total palabras: {len(palabras)}")
-print(f"Palabras únicas: {len(palabras_unicas)}")
-print(f"Palabras únicas: {palabras_unicas}")
-
-# Encontrar palabras que aparecen en ambos textos
-texto2 = "python es divertido y fácil"
-palabras2 = set(texto2.split())
-comunes = palabras_unicas & palabras2
-print(f"Palabras comunes: {comunes}")  # {'python', 'es', 'fácil'}
-EJERCICIO 1.3: Diccionarios y defaultdict
-python
-"""
-EJERCICIO 1.3: DICCIONARIOS Y DEFAULTDICT
-ESENCIA: Estructuras clave-valor con valores predeterminados
-"""
-
-from collections import defaultdict
+class Inventario:
+    """Sistema de inventario usando list comprehensions y slicing"""
+    
+    def __init__(self):
+        self.productos: List[Producto] = []
+    
+    def agregar(self, producto: Producto):
+        """Agrega un producto al inventario"""
+        self.productos.append(producto)
+    
+    # ============================================
+    # LIST COMPREHENSIONS
+    # ============================================
+    def filtrar_por_precio(self, minimo: float) -> List[Producto]:
+        """Filtra productos por precio mínimo usando list comprehension"""
+        return [p for p in self.productos if p.precio >= minimo]
+    
+    def obtener_nombres(self) -> List[str]:
+        """Obtiene todos los nombres usando list comprehension"""
+        return [p.nombre for p in self.productos]
+    
+    def productos_con_descuento(self, descuento: float) -> List[Producto]:
+        """Aplica descuento a productos usando list comprehension"""
+        # Crear nuevos productos con descuento
+        return [
+            Producto(p.id, p.nombre, p.precio * (1 - descuento), p.stock)
+            for p in self.productos
+        ]
+    
+    def productos_agotados(self) -> List[Producto]:
+        """Filtra productos sin stock"""
+        return [p for p in self.productos if p.stock == 0]
+    
+    def top_productos(self, n: int = 3) -> List[Producto]:
+        """Obtiene los n productos más caros usando sorted y slicing"""
+        ordenados = sorted(self.productos, key=lambda p: p.precio, reverse=True)
+        return ordenados[:n]
+    
+    # ============================================
+    # DICT COMPREHENSIONS
+    # ============================================
+    def resumen_precios(self) -> dict:
+        """Resumen de precios usando dict comprehension"""
+        return {p.nombre: p.precio for p in self.productos}
+    
+    def productos_por_stock(self) -> dict:
+        """Diccionario de productos por stock usando dict comprehension"""
+        return {p.nombre: p.stock for p in self.productos}
+    
+    def estadisticas(self) -> dict:
+        """Estadísticas del inventario"""
+        return {
+            "total_productos": len(self.productos),
+            "precio_promedio": sum(p.precio for p in self.productos) / len(self.productos) if self.productos else 0,
+            "stock_total": sum(p.stock for p in self.productos),
+            "valor_total_inventario": sum(p.valor_total() for p in self.productos)
+        }
+    
+    def __str__(self):
+        return f"📦 Inventario: {len(self.productos)} productos"
 
 # ============================================
-# 1. DICCIONARIO BÁSICO
+# DEMOSTRACIÓN
 # ============================================
-persona = {
-    "nombre": "Ana",
-    "edad": 25,
-    "ciudad": "Madrid",
-    "hobbies": ["leer", "programar"]
-}
-print(f"Persona: {persona}")
-
-# Acceso seguro con get()
-print(f"Nombre: {persona.get('nombre')}")  # Ana
-print(f"Apellido: {persona.get('apellido', 'No existe')}")  # No existe
-
-# ============================================
-# 2. MÉTODOS ÚTILES DE DICCIONARIO
-# ============================================
-# update() - Actualizar múltiples valores
-persona.update({"edad": 26, "profesion": "Ingeniera"})
-print(f"Actualizado: {persona}")
-
-# setdefault() - Obtener o establecer valor
-persona.setdefault("pais", "España")  # Si no existe, lo crea
-persona.setdefault("nombre", "María")  # Si existe, no lo cambia
-print(f"Con setdefault: {persona}")
-
-# keys(), values(), items()
-print(f"Claves: {list(persona.keys())}")
-print(f"Valores: {list(persona.values())}")
-print(f"Items: {list(persona.items())}")
-
-# ============================================
-# 3. DEFAULTDICT
-# ============================================
-# Sin defaultdict (requiere verificación)
-diccionario_normal = {}
-for letra in "python":
-    if letra not in diccionario_normal:
-        diccionario_normal[letra] = 0
-    diccionario_normal[letra] += 1
-print(f"Normal: {diccionario_normal}")
-
-# Con defaultdict (automático)
-diccionario_default = defaultdict(int)  # int() devuelve 0
-for letra in "python":
-    diccionario_default[letra] += 1
-print(f"Defaultdict: {dict(diccionario_default)}")
-
-# defaultdict con listas
-agrupados = defaultdict(list)
-nombres = ["Ana", "Luis", "Ana", "Carlos", "Luis", "Ana"]
-for nombre in nombres:
-    agrupados[nombre].append(1)  # La lista se crea automáticamente
-print(f"Agrupados: {dict(agrupados)}")
-
-# ============================================
-# 4. EJERCICIO PRÁCTICO: CONTADOR DE PALABRAS
-# ============================================
-def contar_palabras(texto):
-    """Cuenta palabras usando defaultdict"""
-    contador = defaultdict(int)
-    for palabra in texto.lower().split():
-        contador[palabra] += 1
-    return dict(contador)
-
-texto_ejemplo = "python es genial python es fácil y python es poderoso"
-frecuencia = contar_palabras(texto_ejemplo)
-print(f"Frecuencia: {frecuencia}")
-# {'python': 3, 'es': 3, 'genial': 1, 'fácil': 1, 'y': 1, 'poderoso': 1}
-**EJERCICIO 1.4: Funciones con *args y kwargs
-python
-"""
-EJERCICIO 1.4: FUNCIONES CON *args Y **kwargs
-ESENCIA: Funciones flexibles con número variable de argumentos
-"""
-
-# ============================================
-# 1. *args - ARGUMENTOS POSICIONALES VARIABLES
-# ============================================
-def sumar_todos(*args):
-    """Suma cualquier cantidad de números"""
-    print(f"Args recibidos: {args}")
-    return sum(args)
-
-print(f"Suma: {sumar_todos(1, 2, 3)}")        # 6
-print(f"Suma: {sumar_todos(10, 20, 30, 40)}") # 100
-print(f"Suma: {sumar_todos()}")               # 0
-
-# *args con otros parámetros
-def calcular(operacion, *args):
-    if operacion == "suma":
-        return sum(args)
-    elif operacion == "multiplicar":
-        resultado = 1
-        for num in args:
-            resultado *= num
-        return resultado
-    elif operacion == "promedio":
-        return sum(args) / len(args) if args else 0
-
-print(f"Suma: {calcular('suma', 1, 2, 3, 4)}")        # 10
-print(f"Multiplicar: {calcular('multiplicar', 2, 3, 4)}") # 24
-print(f"Promedio: {calcular('promedio', 10, 20, 30)}") # 20.0
-
-# ============================================
-# 2. **kwargs - ARGUMENTOS NOMBRADOS VARIABLES
-# ============================================
-def mostrar_info(**kwargs):
-    """Muestra información en formato clave-valor"""
-    print(f"Kwargs recibidos: {kwargs}")
-    for clave, valor in kwargs.items():
+if __name__ == "__main__":
+    # Crear inventario
+    inventario = Inventario()
+    
+    # Agregar productos
+    inventario.agregar(Producto(1, "Laptop", 1200, 10))
+    inventario.agregar(Producto(2, "Mouse", 25, 50))
+    inventario.agregar(Producto(3, "Teclado", 80, 30))
+    inventario.agregar(Producto(4, "Monitor", 300, 15))
+    inventario.agregar(Producto(5, "Impresora", 150, 0))
+    
+    print(inventario)
+    
+    # List comprehensions
+    print("\n🔍 Productos > $100:")
+    for p in inventario.filtrar_por_precio(100):
+        print(f"  {p}")
+    
+    # Slicing - top productos
+    print("\n🏆 Top 3 productos más caros:")
+    for p in inventario.top_productos(3):
+        print(f"  {p}")
+    
+    # Dict comprehension
+    print("\n📊 Resumen de precios:")
+    print(inventario.resumen_precios())
+    
+    # Estadísticas
+    print("\n📈 Estadísticas:")
+    for clave, valor in inventario.estadisticas().items():
         print(f"  {clave}: {valor}")
-
-mostrar_info(nombre="Ana", edad=25, ciudad="Madrid")
-# nombre: Ana
-# edad: 25
-# ciudad: Madrid
-
-# ============================================
-# 3. COMBINAR *args Y **kwargs
-# ============================================
-def procesar(*args, **kwargs):
-    print(f"Args posicionales: {args}")
-    print(f"Args nombrados: {kwargs}")
-    print(f"Suma args: {sum(args)}")
-    print(f"Operación: {kwargs.get('operacion', 'No especificada')}")
-    print(f"Formato: {kwargs.get('formato', 'No especificado')}")
-
-procesar(1, 2, 3, 4, 5, operacion="suma", formato="json")
-
-# ============================================
-# 4. EJERCICIO PRÁCTICO: FUNCIÓN FLEXIBLE
-# ============================================
-def crear_usuario(nombre, **kwargs):
-    """Crea un usuario con datos variables"""
-    usuario = {"nombre": nombre}
-    usuario.update(kwargs)
-    return usuario
-
-usuario1 = crear_usuario("Ana", edad=25, ciudad="Madrid")
-usuario2 = crear_usuario("Luis", edad=30, profesion="Ingeniero", activo=True)
-
-print(f"Usuario 1: {usuario1}")
-print(f"Usuario 2: {usuario2}")
-EJERCICIO 1.5: Decoradores
-python
+```
+### EJERCICIO 1.2: Sistema de Ventas con Tuplas, Sets y Desempaquetado
+```python
 """
-EJERCICIO 1.5: DECORADORES
-ESENCIA: Añadir funcionalidad a funciones sin modificar su código
+EJERCICIO 1.2: SISTEMA DE VENTAS CON POO
+ESENCIA: Clase que maneja ventas usando tuplas, sets y desempaquetado
+"""
+
+from typing import List, Set, Tuple
+from collections import Counter
+from datetime import datetime
+
+class Venta:
+    """Representa una venta usando tuplas para almacenar datos"""
+    
+    def __init__(self, producto: str, categoria: str, precio: float, cantidad: int, fecha: str):
+        # Usar tupla para almacenar datos inmutables de la venta
+        self.datos = (producto, categoria, precio, cantidad, fecha)
+        self.total = precio * cantidad
+    
+    @property
+    def producto(self) -> str:
+        return self.datos[0]
+    
+    @property
+    def categoria(self) -> str:
+        return self.datos[1]
+    
+    @property
+    def precio(self) -> float:
+        return self.datos[2]
+    
+    @property
+    def cantidad(self) -> int:
+        return self.datos[3]
+    
+    @property
+    def fecha(self) -> str:
+        return self.datos[4]
+    
+    def __str__(self):
+        return f"{self.producto} x{self.cantidad} = ${self.total}"
+
+class SistemaVentas:
+    """Sistema de ventas usando sets y desempaquetado"""
+    
+    def __init__(self):
+        self.ventas: List[Venta] = []
+    
+    def registrar_venta(self, venta: Venta):
+        """Registra una nueva venta"""
+        self.ventas.append(venta)
+    
+    # ============================================
+    # SETS - ELEMENTOS ÚNICOS
+    # ============================================
+    def productos_unicos(self) -> Set[str]:
+        """Obtiene productos únicos vendidos usando set comprehension"""
+        return {v.producto for v in self.ventas}
+    
+    def categorias_unicas(self) -> Set[str]:
+        """Obtiene categorías únicas usando set comprehension"""
+        return {v.categoria for v in self.ventas}
+    
+    def productos_frecuentes(self) -> Set[str]:
+        """Productos con más de 3 ventas"""
+        from collections import Counter
+        contador = Counter(v.producto for v in self.ventas)
+        return {producto for producto, count in contador.items() if count > 3}
+    
+    # ============================================
+    # DESEMPAQUETADO DE TUPLAS
+    # ============================================
+    def ventas_resumidas(self) -> List[Tuple[str, float]]:
+        """Retorna lista de tuplas (producto, total) desempaquetadas"""
+        return [(v.producto, v.total) for v in self.ventas]
+    
+    def analisis_por_categoria(self) -> dict:
+        """Análisis de ventas por categoría usando desempaquetado"""
+        from collections import defaultdict
+        categorias = defaultdict(list)
+        
+        # Desempaquetar datos de cada venta
+        for venta in self.ventas:
+            # Desempaquetar tupla de datos
+            producto, categoria, precio, cantidad, fecha = venta.datos
+            categorias[categoria].append((producto, precio * cantidad))
+        
+        # Procesar resultados con dict comprehension
+        return {
+            categoria: {
+                "total_ventas": len(ventas),
+                "ingreso_total": sum(total for _, total in ventas),
+                "productos": [prod for prod, _ in ventas]
+            }
+            for categoria, ventas in categorias.items()
+        }
+    
+    # ============================================
+    # OPERACIONES CON SETS
+    # ============================================
+    def comparar_con_otro_sistema(self, otro_sistema: 'SistemaVentas') -> dict:
+        """Compara este sistema con otro usando sets"""
+        productos1 = self.productos_unicos()
+        productos2 = otro_sistema.productos_unicos()
+        
+        return {
+            "ambos": productos1 & productos2,  # Intersección
+            "solo_primero": productos1 - productos2,  # Diferencia
+            "solo_segundo": productos2 - productos1,
+            "todos": productos1 | productos2  # Unión
+        }
+    
+    def estadisticas(self) -> dict:
+        """Estadísticas del sistema de ventas"""
+        if not self.ventas:
+            return {"total_ventas": 0}
+        
+        return {
+            "total_ventas": len(self.ventas),
+            "productos_unicos": len(self.productos_unicos()),
+            "categorias_unicas": len(self.categorias_unicas()),
+            "ingreso_total": sum(v.total for v in self.ventas),
+            "promedio_venta": sum(v.total for v in self.ventas) / len(self.ventas)
+        }
+
+# ============================================
+# DEMOSTRACIÓN
+# ============================================
+if __name__ == "__main__":
+    # Crear sistema de ventas
+    sistema = SistemaVentas()
+    
+    # Registrar ventas
+    sistema.registrar_venta(Venta("Laptop", "Electrónica", 1200, 2, "2026-08-10"))
+    sistema.registrar_venta(Venta("Mouse", "Electrónica", 25, 5, "2026-08-10"))
+    sistema.registrar_venta(Venta("Cuaderno", "Papelería", 3, 10, "2026-08-11"))
+    sistema.registrar_venta(Venta("Monitor", "Electrónica", 300, 1, "2026-08-11"))
+    sistema.registrar_venta(Venta("Laptop", "Electrónica", 1200, 1, "2026-08-12"))
+    
+    print("📊 SISTEMA DE VENTAS")
+    print(sistema.estadisticas())
+    
+    # Sets - productos únicos
+    print(f"\n🔍 Productos únicos: {sistema.productos_unicos()}")
+    print(f"📂 Categorías únicas: {sistema.categorias_unicas()}")
+    
+    # Desempaquetado de tuplas
+    print("\n📋 Ventas resumidas:")
+    for producto, total in sistema.ventas_resumidas():
+        print(f"  {producto}: ${total}")
+    
+    # Análisis por categoría
+    print("\n📊 Análisis por categoría:")
+    for categoria, datos in sistema.analisis_por_categoria().items():
+        print(f"  {categoria}: {datos['total_ventas']} ventas, ${datos['ingreso_total']}")
+```
+### EJERCICIO 1.3: Gestor de Datos con Diccionarios y defaultdict
+```python
+"""
+EJERCICIO 1.3: GESTOR DE DATOS CON POO
+ESENCIA: Clase que maneja datos usando diccionarios y defaultdict
+"""
+
+from collections import defaultdict, Counter
+from typing import Dict, List, Any, Optional
+
+class GestorDatos:
+    """Gestiona datos usando diccionarios y defaultdict"""
+    
+    def __init__(self):
+        # defaultdict para agrupar datos automáticamente
+        self.datos = defaultdict(list)
+        self.contadores = defaultdict(int)
+        self.agrupados = defaultdict(list)
+    
+    def agregar_dato(self, categoria: str, valor: Any):
+        """Agrega un dato a una categoría"""
+        self.datos[categoria].append(valor)
+        self.contadores[categoria] += 1
+    
+    # ============================================
+    # DEFAULTDICT CON LISTAS
+    # ============================================
+    def agrupar_por_tipo(self, elementos: List[Any]) -> Dict[str, List[Any]]:
+        """Agrupa elementos por tipo usando defaultdict"""
+        grupos = defaultdict(list)
+        for elem in elementos:
+            grupos[type(elem).__name__].append(elem)
+        return dict(grupos)
+    
+    def agrupar_por_longitud(self, palabras: List[str]) -> Dict[int, List[str]]:
+        """Agrupa palabras por longitud usando defaultdict"""
+        grupos = defaultdict(list)
+        for palabra in palabras:
+            grupos[len(palabra)].append(palabra)
+        return dict(grupos)
+    
+    # ============================================
+    # DEFAULTDICT CON CONTADORES
+    # ============================================
+    def contar_frecuencias(self, elementos: List[Any]) -> Dict[Any, int]:
+        """Cuenta frecuencias usando defaultdict(int)"""
+        contador = defaultdict(int)
+        for elem in elementos:
+            contador[elem] += 1
+        return dict(contador)
+    
+    def contar_por_categoria(self, elementos: List[tuple]) -> Dict[str, int]:
+        """Cuenta elementos por categoría"""
+        contador = defaultdict(int)
+        for categoria, _ in elementos:
+            contador[categoria] += 1
+        return dict(contador)
+    
+    # ============================================
+    # MÉTODOS CON DICCIONARIOS
+    # ============================================
+    def fusionar_diccionarios(self, *diccionarios: Dict) -> Dict:
+        """Fusiona múltiples diccionarios usando update"""
+        resultado = {}
+        for dic in diccionarios:
+            resultado.update(dic)
+        return resultado
+    
+    def obtener_con_default(self, diccionario: Dict, clave: str, default: Any = None) -> Any:
+        """Obtiene valor con default usando get"""
+        return diccionario.get(clave, default)
+    
+    def procesar_ventas(self, ventas: List[Dict]) -> Dict:
+        """Procesa ventas usando defaultdict para estadísticas"""
+        # Agrupar por categoría
+        por_categoria = defaultdict(list)
+        por_producto = defaultdict(int)
+        
+        for venta in ventas:
+            categoria = venta.get('categoria', 'Sin categoría')
+            producto = venta.get('producto')
+            cantidad = venta.get('cantidad', 0)
+            
+            por_categoria[categoria].append(venta)
+            por_producto[producto] += cantidad
+        
+        return {
+            "ventas_por_categoria": dict(por_categoria),
+            "cantidad_por_producto": dict(por_producto),
+            "total_categorias": len(por_categoria)
+        }
+    
+    def resumen(self) -> Dict:
+        """Resumen de datos gestionados"""
+        return {
+            "total_categorias": len(self.datos),
+            "total_elementos": sum(len(v) for v in self.datos.values()),
+            "por_categoria": {k: len(v) for k, v in self.datos.items()}
+        }
+
+class AnalizadorTexto:
+    """Analiza texto usando defaultdict y Counter"""
+    
+    def __init__(self, texto: str):
+        self.texto = texto
+        self.palabras = texto.lower().split()
+    
+    def frecuencia_palabras(self) -> Dict[str, int]:
+        """Frecuencia usando Counter"""
+        return dict(Counter(self.palabras))
+    
+    def agrupar_por_longitud(self) -> Dict[int, List[str]]:
+        """Agrupa palabras por longitud usando defaultdict"""
+        grupos = defaultdict(list)
+        for palabra in self.palabras:
+            grupos[len(palabra)].append(palabra)
+        return dict(grupos)
+    
+    def palabras_por_letra(self) -> Dict[str, List[str]]:
+        """Agrupa palabras por primera letra usando defaultdict"""
+        grupos = defaultdict(list)
+        for palabra in self.palabras:
+            grupos[palabra[0]].append(palabra)
+        return dict(grupos)
+    
+    def estadisticas(self) -> Dict:
+        """Estadísticas del texto"""
+        freq = self.frecuencia_palabras()
+        return {
+            "total_palabras": len(self.palabras),
+            "palabras_unicas": len(freq),
+            "palabra_mas_frecuente": max(freq, key=freq.get) if freq else None,
+            "frecuencia": freq
+        }
+
+# ============================================
+# DEMOSTRACIÓN
+# ============================================
+if __name__ == "__main__":
+    # Gestor de datos
+    gestor = GestorDatos()
+    
+    # Agregar datos
+    gestor.agregar_dato("frutas", "manzana")
+    gestor.agregar_dato("frutas", "pera")
+    gestor.agregar_dato("verduras", "zanahoria")
+    
+    print("📊 GESTOR DE DATOS:")
+    print(gestor.resumen())
+    
+    # Agrupar por tipo
+    elementos = [1, "hola", 3.14, "mundo", 42, True]
+    print(f"\n🔍 Agrupados por tipo: {gestor.agrupar_por_tipo(elementos)}")
+    
+    # Analizador de texto
+    texto = "python es genial python es facil python es poderoso"
+    analizador = AnalizadorTexto(texto)
+    
+    print("\n📝 ANÁLISIS DE TEXTO:")
+    stats = analizador.estadisticas()
+    print(f"  Total palabras: {stats['total_palabras']}")
+    print(f"  Palabras únicas: {stats['palabras_unicas']}")
+    print(f"  Palabra más frecuente: {stats['palabra_mas_frecuente']}")
+    
+    print("\n📊 Agrupado por longitud:")
+    for longitud, palabras in analizador.agrupar_por_longitud().items():
+        print(f"  Longitud {longitud}: {len(palabras)} palabras")
+```
+### **EJERCICIO 1.4: Funciones Avanzadas con POO (*args, kwargs, Type Hints)
+```python
+"""
+EJERCICIO 1.4: FUNCIONES AVANZADAS CON POO
+ESENCIA: Clase que usa *args, **kwargs y type hints
+"""
+
+from typing import Any, Dict, List, Optional, Union, Tuple
+
+class ProcesadorDatos:
+    """Procesa datos usando *args, **kwargs y type hints"""
+    
+    def __init__(self, nombre: str):
+        self.nombre = nombre
+        self.historial: List[Dict] = []
+    
+    # ============================================
+    # *args - ARGUMENTOS POSICIONALES VARIABLES
+    # ============================================
+    def sumar_todos(self, *args: float) -> float:
+        """Suma cualquier cantidad de números"""
+        self._registrar("suma", args)
+        return sum(args)
+    
+    def procesar_multiples(self, operacion: str, *args: float) -> Union[float, str]:
+        """Procesa múltiples números con diferentes operaciones"""
+        if not args:
+            return "No hay datos"
+        
+        if operacion == "suma":
+            return sum(args)
+        elif operacion == "promedio":
+            return sum(args) / len(args)
+        elif operacion == "maximo":
+            return max(args)
+        elif operacion == "minimo":
+            return min(args)
+        else:
+            return f"Operación '{operacion}' no soportada"
+    
+    # ============================================
+    # **kwargs - ARGUMENTOS NOMBRADOS VARIABLES
+    # ============================================
+    def crear_usuario(self, nombre: str, **kwargs) -> Dict[str, Any]:
+        """Crea un usuario con datos variables"""
+        usuario = {"nombre": nombre}
+        usuario.update(kwargs)
+        self._registrar("crear_usuario", usuario)
+        return usuario
+    
+    def configurar_sistema(self, **kwargs) -> Dict[str, Any]:
+        """Configura el sistema con parámetros variables"""
+        configuracion = {
+            "modo": kwargs.get("modo", "normal"),
+            "debug": kwargs.get("debug", False),
+            "timeout": kwargs.get("timeout", 30),
+            "formato": kwargs.get("formato", "json")
+        }
+        # Sobrescribir con kwargs
+        configuracion.update(kwargs)
+        self._registrar("configurar", configuracion)
+        return configuracion
+    
+    # ============================================
+    # COMBINAR *args Y **kwargs
+    # ============================================
+    def procesar_venta(self, *args, **kwargs) -> Dict:
+        """Procesa una venta con datos flexibles"""
+        # args: productos, kwargs: detalles de la venta
+        productos = list(args)
+        
+        venta = {
+            "productos": productos,
+            "fecha": kwargs.get("fecha", "2026-08-15"),
+            "cliente": kwargs.get("cliente", "Anónimo"),
+            "descuento": kwargs.get("descuento", 0),
+            "metodo_pago": kwargs.get("metodo_pago", "Efectivo")
+        }
+        
+        self._registrar("procesar_venta", venta)
+        return venta
+    
+    # ============================================
+    # TYPE HINTS - MÉTODOS CON ANOTACIONES
+    # ============================================
+    def filtrar_numeros(self, datos: List[Union[int, float]], 
+                       minimo: float, maximo: float) -> List[float]:
+        """Filtra números en un rango usando type hints"""
+        return [x for x in datos if minimo <= x <= maximo]
+    
+    def procesar_strings(self, textos: List[str], 
+                        operacion: str = "mayusculas") -> List[str]:
+        """Procesa strings con type hints"""
+        if operacion == "mayusculas":
+            return [t.upper() for t in textos]
+        elif operacion == "minusculas":
+            return [t.lower() for t in textos]
+        elif operacion == "longitud":
+            return [str(len(t)) for t in textos]
+        return textos
+    
+    # ============================================
+    # MÉTODOS PRIVADOS CON TYPE HINTS
+    # ============================================
+    def _registrar(self, operacion: str, datos: Any) -> None:
+        """Registra una operación en el historial"""
+        self.historial.append({
+            "operacion": operacion,
+            "datos": datos,
+            "timestamp": __import__('datetime').datetime.now().isoformat()
+        })
+    
+    def obtener_historial(self) -> List[Dict]:
+        """Obtiene el historial de operaciones"""
+        return self.historial
+    
+    def estadisticas(self) -> Dict:
+        """Estadísticas del procesador"""
+        return {
+            "nombre": self.nombre,
+            "total_operaciones": len(self.historial),
+            "operaciones": [h["operacion"] for h in self.historial]
+        }
+
+# ============================================
+# DEMOSTRACIÓN
+# ============================================
+if __name__ == "__main__":
+    # Crear procesador
+    procesador = ProcesadorDatos("MiProcesador")
+    
+    # *args
+    print("🔢 SUMAR TODOS:")
+    print(f"  Suma: {procesador.sumar_todos(1, 2, 3, 4, 5)}")
+    print(f"  Promedio: {procesador.procesar_multiples('promedio', 10, 20, 30, 40)}")
+    print(f"  Máximo: {procesador.procesar_multiples('maximo', 5, 8, 3, 12, 6)}")
+    
+    # **kwargs
+    print("\n👤 CREAR USUARIO:")
+    usuario = procesador.crear_usuario("Ana", edad=25, ciudad="Madrid", activo=True)
+    print(f"  Usuario: {usuario}")
+    
+    print("\n⚙️ CONFIGURAR SISTEMA:")
+    config = procesador.configurar_sistema(modo="avanzado", debug=True, timeout=60)
+    print(f"  Configuración: {config}")
+    
+    # Combinar *args y **kwargs
+    print("\n🛒 PROCESAR VENTA:")
+    venta = procesador.procesar_venta("Laptop", "Mouse", "Teclado", 
+                                      cliente="Carlos", descuento=10, metodo_pago="Tarjeta")
+    print(f"  Venta: {venta}")
+    
+    # Type hints
+    print("\n📊 PROCESAR DATOS CON TYPE HINTS:")
+    numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    filtrados = procesador.filtrar_numeros(numeros, 3, 7)
+    print(f"  Números entre 3 y 7: {filtrados}")
+    
+    textos = ["hola", "mundo", "python"]
+    mayusculas = procesador.procesar_strings(textos, "mayusculas")
+    print(f"  Mayúsculas: {mayusculas}")
+    
+    # Historial
+    print("\n📋 HISTORIAL DE OPERACIONES:")
+    for h in procesador.obtener_historial():
+        print(f"  {h['operacion']} - {h['timestamp']}")
+```
+### EJERCICIO 1.5: Sistema de Análisis con Decoradores POO
+```python
+"""
+EJERCICIO 1.5: SISTEMA DE ANÁLISIS CON DECORADORES POO
+ESENCIA: Clases que usan decoradores para funcionalidad adicional
 """
 
 import time
 from functools import wraps
+from typing import Callable, Any
 
 # ============================================
-# 1. DECORADOR BÁSICO - MEDIR TIEMPO
+# DECORADORES PARA LA CLASE
 # ============================================
-def medir_tiempo(func):
+
+def medir_tiempo(func: Callable) -> Callable:
     """Decorador que mide el tiempo de ejecución"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         inicio = time.perf_counter()
         resultado = func(*args, **kwargs)
         fin = time.perf_counter()
-        print(f"⏱️ {func.__name__} tardó: {(fin - inicio)*1000:.2f} ms")
+        print(f"⏱️ {func.__name__}: {(fin-inicio)*1000:.2f}ms")
         return resultado
     return wrapper
 
-@medir_tiempo
-def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n-1) + fibonacci(n-2)
-
-print(f"Fibonacci(30): {fibonacci(30)}")
-
-# ============================================
-# 2. DECORADOR - REGISTRAR LLAMADAS
-# ============================================
-def registrar(func):
-    """Decorador que registra cada llamada"""
+def registrar_llamada(func: Callable) -> Callable:
+    """Decorador que registra llamadas a métodos"""
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(self, *args, **kwargs):
         print(f"📝 Llamando a {func.__name__}")
-        print(f"   Args: {args}, Kwargs: {kwargs}")
-        return func(*args, **kwargs)
+        resultado = func(self, *args, **kwargs)
+        # Registrar en el historial de la clase
+        if hasattr(self, '_historial'):
+            self._historial.append({
+                'metodo': func.__name__,
+                'args': args,
+                'kwargs': kwargs,
+                'resultado': resultado
+            })
+        return resultado
     return wrapper
 
-@registrar
-def saludar(nombre, saludo="Hola"):
-    return f"{saludo} {nombre}"
-
-print(saludar("Ana", saludo="Buenos días"))
-
-# ============================================
-# 3. DECORADOR CON PARÁMETROS
-# ============================================
-def repetir(veces=2):
-    """Decorador que repite la ejecución n veces"""
-    def decorador(func):
+def validar_argumentos(tipos: dict):
+    """Decorador que valida tipos de argumentos"""
+    def decorador(func: Callable) -> Callable:
         @wraps(func)
-        def wrapper(*args, **kwargs):
-            resultados = []
-            for i in range(veces):
-                print(f"Ejecución {i+1}/{veces}")
-                resultados.append(func(*args, **kwargs))
-            return resultados
+        def wrapper(self, *args, **kwargs):
+            # Validar argumentos posicionales
+            for i, arg in enumerate(args):
+                if i in tipos:
+                    tipo_esperado = tipos[i]
+                    if not isinstance(arg, tipo_esperado):
+                        raise TypeError(f"Arg {i} debe ser {tipo_esperado.__name__}")
+            return func(self, *args, **kwargs)
         return wrapper
     return decorador
 
-@repetir(3)
-def multiplicar(a, b):
-    return a * b
+# ============================================
+# CLASE CON DECORADORES
+# ============================================
 
-print(f"Resultados: {multiplicar(5, 3)}")  # [15, 15, 15]
+class AnalizadorEstadistico:
+    """Analiza estadísticas usando decoradores"""
+    
+    def __init__(self, nombre: str):
+        self.nombre = nombre
+        self._historial = []
+        self.datos = []
+    
+    @registrar_llamada
+    @medir_tiempo
+    def cargar_datos(self, *args: float):
+        """Carga datos para análisis"""
+        self.datos = list(args)
+        return f"Cargados {len(self.datos)} datos"
+    
+    @registrar_llamada
+    @medir_tiempo
+    @validar_argumentos({0: list})
+    def procesar_con_metodo(self, datos: list, metodo: str = "suma") -> float:
+        """Procesa datos con diferentes métodos"""
+        if metodo == "suma":
+            return sum(datos)
+        elif metodo == "promedio":
+            return sum(datos) / len(datos) if datos else 0
+        elif metodo == "maximo":
+            return max(datos) if datos else None
+        elif metodo == "minimo":
+            return min(datos) if datos else None
+        return 0
+    
+    @registrar_llamada
+    def analizar_texto(self, texto: str) -> dict:
+        """Analiza texto usando estructuras de datos"""
+        from collections import Counter, defaultdict
+        
+        palabras = texto.lower().split()
+        frecuencia = Counter(palabras)
+        
+        return {
+            "total_palabras": len(palabras),
+            "unicas": len(frecuencia),
+            "mas_comunes": frecuencia.most_common(3),
+            "frecuencia": dict(frecuencia)
+        }
+    
+    def obtener_historial(self) -> list:
+        """Obtiene el historial de operaciones"""
+        return self._historial
+    
+    def __str__(self):
+        return f"📊 Analizador: {self.nombre} ({len(self.datos)} datos)"
 
 # ============================================
-# 4. EJERCICIO PRÁCTICO: DECORADOR DE VALIDACIÓN
+# DEMOSTRACIÓN
 # ============================================
-def validar_tipos(func):
-    """Decorador que valida tipos de argumentos"""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Obtener anotaciones de tipo
-        anotaciones = func.__annotations__
-        
-        # Validar argumentos posicionales
-        for i, arg in enumerate(args):
-            if i in anotaciones:
-                tipo = anotaciones[list(anotaciones.keys())[i]]
-                if not isinstance(arg, tipo):
-                    raise TypeError(f"Arg {i} debe ser {tipo.__name__}")
-        
-        # Validar argumentos nombrados
-        for nombre, valor in kwargs.items():
-            if nombre in anotaciones:
-                tipo = anotaciones[nombre]
-                if not isinstance(valor, tipo):
-                    raise TypeError(f"{nombre} debe ser {tipo.__name__}")
-        
-        return func(*args, **kwargs)
-    return wrapper
+if __name__ == "__main__":
+    # Crear analizador
+    analizador = AnalizadorEstadistico("MiAnalizador")
+    
+    print(analizador)
+    
+    # Cargar datos
+    print("\n📥 CARGANDO DATOS:")
+    print(analizador.cargar_datos(10, 20, 30, 40, 50))
+    
+    # Procesar con diferentes métodos
+    print("\n📊 PROCESANDO DATOS:")
+    print(f"  Suma: {analizador.procesar_con_metodo(analizador.datos, 'suma')}")
+    print(f"  Promedio: {analizador.procesar_con_metodo(analizador.datos, 'promedio')}")
+    print(f"  Máximo: {analizador.procesar_con_metodo(analizador.datos, 'maximo')}")
+    
+    # Analizar texto
+    print("\n📝 ANALIZANDO TEXTO:")
+    texto = "python es genial python es facil python es poderoso"
+    resultado = analizador.analizar_texto(texto)
+    print(f"  Total: {resultado['total_palabras']}")
+    print(f"  Únicas: {resultado['unicas']}")
+    print(f"  Más comunes: {resultado['mas_comunes']}")
+    
+    # Mostrar historial
+    print("\n📋 HISTORIAL DE OPERACIONES:")
+    for i, op in enumerate(analizador.obtener_historial(), 1):
+        print(f"  {i}. {op['metodo']} - {op['resultado'][:50] if isinstance(op['resultado'], str) else op['resultado']}")
+```
+### MINI-PROYECTO DÍA 1: Sistema de Análisis de Texto con POO
+```python
 
-@validar_tipos
-def procesar_numeros(a: int, b: int) -> int:
-    return a + b
+```
 
-print(procesar_numeros(5, 3))  # 8
-# procesar_numeros("5", 3)  # TypeError
+```python
+```python
