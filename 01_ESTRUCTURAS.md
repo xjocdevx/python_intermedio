@@ -1,4 +1,4 @@
-### DÍA 1: ESTRUCTURAS DE DATOS AVANZADAS Y FUNCIONES
+### MODULO 2: ESTRUCTURAS DE DATOS AVANZADAS Y FUNCIONES
 ### OBJETIVO: Aplicar POO para manejar list comprehensions, slicing, sets, diccionarios, defaultdict, decoradores y funciones con argumentos variables.
 ### EJERCICIO 1.1: Sistema de Inventario con List Comprehensions y Slicing
 ```python
@@ -758,7 +758,7 @@ if __name__ == "__main__":
     for i, op in enumerate(analizador.obtener_historial(), 1):
         print(f"  {i}. {op['metodo']} - {op['resultado'][:50] if isinstance(op['resultado'], str) else op['resultado']}")
 ```
-### DÍA 1: Sistema de Análisis de Texto con POO
+### MODULO 2: Sistema de Análisis de Texto con POO
 ```python
 """
 MINI-PROYECTO DÍA 1: SISTEMA DE ANÁLISIS DE TEXTO CON POO
