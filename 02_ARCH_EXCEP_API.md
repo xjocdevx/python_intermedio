@@ -1,4 +1,4 @@
-### DÍA 2: MANEJO DE ARCHIVOS, EXCEPCIONES Y APIS CON POO
+### MODULO 3: MANEJO DE ARCHIVOS, EXCEPCIONES Y APIS CON POO
 ### OBJETIVO: Implementar clases para manejar archivos, excepciones, logging y consumo de APIs.
 ### EJERCICIO 2.1: Gestor de Archivos con POO
 ```python
@@ -585,7 +585,7 @@ if __name__ == "__main__":
     except ErrorAPI as e:
         print(f"❌ Error de API: {e}")
 ```
-### DÍA 2: Sistema de Procesamiento de Datos con POO
+### MODULO 3: Sistema de Procesamiento de Datos con POO
 ```python
 """
 MINI-PROYECTO DÍA 2: SISTEMA DE PROCESAMIENTO DE DATOS CON POO
