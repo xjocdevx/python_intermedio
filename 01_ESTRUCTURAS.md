@@ -1,4 +1,4 @@
-
+```python
 ### DÍA 1: ESTRUCTURAS DE DATOS AVANZADAS Y FUNCIONES
 ### OBJETIVO: Dominar list comprehensions, slicing, sets, diccionarios, defaultdict, decoradores y funciones con argumentos variables.
 EJERCICIO 1.1: List Comprehensions y Slicing
