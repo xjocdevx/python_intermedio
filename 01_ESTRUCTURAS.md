@@ -1,3 +1,5 @@
+### Día 1	Estructuras de Datos Avanzadas y Funciones
+### Ejercicios:  ESTRUCTURAS DE DATOS AVANZADAS Y FUNCIONE
 ```python
 ### DÍA 1: ESTRUCTURAS DE DATOS AVANZADAS Y FUNCIONES
 ### OBJETIVO: Dominar list comprehensions, slicing, sets, diccionarios, defaultdict, decoradores y funciones con argumentos variables.
@@ -7,7 +9,9 @@ python
 EJERCICIO 1.1: LIST COMPREHENSIONS Y SLICING
 ESENCIA: Crear listas de forma eficiente y extraer subconjuntos
 """
-
+```
+### LIST COMPREHENSION BÁSICA
+```python
 ### ============================================
 ### 1. LIST COMPREHENSION BÁSICA
 ## ============================================
@@ -15,7 +19,9 @@ ESENCIA: Crear listas de forma eficiente y extraer subconjuntos
 numeros = [1, 2, 3, 4, 5]
 cuadrados = [x**2 for x in numeros]
 print(f"Cuadrados: {cuadrados}")  # [1, 4, 9, 16, 25]
-
+```
+Ejercicios: LIST COMPREHENSION CON CONDICIÓN
+```python
 # ============================================
 # 2. LIST COMPREHENSION CON CONDICIÓN
 # ============================================
@@ -26,7 +32,9 @@ print(f"Números pares: {pares}")  # [2, 4]
 # Con operación y condición
 pares_cuadrado = [x**2 for x in numeros if x % 2 == 0]
 print(f"Cuadrado de pares: {pares_cuadrado}")  # [4, 16]
-
+```
+Ejercicio: LIST COMPREHENSION ANIDADA
+```python
 # ============================================
 # 3. LIST COMPREHENSION ANIDADA
 # ============================================
@@ -34,7 +42,9 @@ matriz = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 # Aplanar matriz
 aplanada = [num for fila in matriz for num in fila]
 print(f"Matriz aplanada: {aplanada}")  # [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
+```
+Ejercicio SLICING (REBANADO)
+```python
 # ============================================
 # 4. SLICING (REBANADO)
 # ============================================
@@ -47,7 +57,9 @@ print(f"Últimos 3: {lista[-3:]}")      # [70, 80, 90]
 print(f"Posiciones 2-5: {lista[2:6]}") # [30, 40, 50, 60]
 print(f"Cada 2 elementos: {lista[::2]}") # [10, 30, 50, 70, 90]
 print(f"Invertir lista: {lista[::-1]}")  # [90, 80, 70, 60, 50, 40, 30, 20, 10]
-
+```
+Ejercicio SLICING EN STRINGS
+```python
 # ============================================
 # 5. SLICING EN STRINGS
 # ============================================
@@ -55,7 +67,9 @@ texto = "Python Intermedio"
 print(f"Primeros 6: {texto[:6]}")      # Python
 print(f"Últimos 10: {texto[-10:]}")     # Intermedio
 print(f"Texto invertido: {texto[::-1]}") # oidemretnI nohtyP
-
+```
+Ejercicio: 6
+```python
 # ============================================
 # 6. EJERCICIO PRÁCTICO: PROCESAMIENTO DE DATOS
 # ============================================
