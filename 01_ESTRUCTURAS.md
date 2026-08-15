@@ -1,3 +1,4 @@
+
 ### DÍA 1: ESTRUCTURAS DE DATOS AVANZADAS Y FUNCIONES
 ### OBJETIVO: Dominar list comprehensions, slicing, sets, diccionarios, defaultdict, decoradores y funciones con argumentos variables.
 EJERCICIO 1.1: List Comprehensions y Slicing
@@ -7,9 +8,9 @@ EJERCICIO 1.1: LIST COMPREHENSIONS Y SLICING
 ESENCIA: Crear listas de forma eficiente y extraer subconjuntos
 """
 
-# ============================================
-# 1. LIST COMPREHENSION BÁSICA
-# ============================================
+### ============================================
+### 1. LIST COMPREHENSION BÁSICA
+## ============================================
 # Sintaxis: [expresion for elemento in iterable]
 numeros = [1, 2, 3, 4, 5]
 cuadrados = [x**2 for x in numeros]
