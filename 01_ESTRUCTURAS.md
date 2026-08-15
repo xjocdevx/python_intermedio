@@ -758,10 +758,233 @@ if __name__ == "__main__":
     for i, op in enumerate(analizador.obtener_historial(), 1):
         print(f"  {i}. {op['metodo']} - {op['resultado'][:50] if isinstance(op['resultado'], str) else op['resultado']}")
 ```
-### MINI-PROYECTO DÍA 1: Sistema de Análisis de Texto con POO
+### DÍA 1: Sistema de Análisis de Texto con POO
 ```python
+"""
+MINI-PROYECTO DÍA 1: SISTEMA DE ANÁLISIS DE TEXTO CON POO
+ESENCIA: Sistema completo que integra todos los conceptos de POO del día 1
+"""
 
+from collections import Counter, defaultdict
+from typing import List, Dict, Set, Tuple, Optional
+from datetime import datetime
+import re
+import time
+from functools import wraps
+
+# ============================================
+# DECORADORES
+# ============================================
+
+def cronometrar(func):
+    """Decorador para medir tiempo de ejecución"""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        inicio = time.perf_counter()
+        resultado = func(*args, **kwargs)
+        print(f"⏱️ {func.__name__}: {(time.perf_counter()-inicio)*1000:.2f}ms")
+        return resultado
+    return wrapper
+
+def registrar_analisis(func):
+    """Decorador para registrar análisis realizados"""
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        resultado = func(self, *args, **kwargs)
+        if hasattr(self, 'historial'):
+            self.historial.append({
+                'metodo': func.__name__,
+                'args': args,
+                'resultado': str(resultado)[:100] if isinstance(resultado, (dict, list)) else str(resultado)
+            })
+        return resultado
+    return wrapper
+
+# ============================================
+# CLASES DEL SISTEMA
+# ============================================
+
+class Texto:
+    """Representa un texto a analizar"""
+    
+    def __init__(self, contenido: str, nombre: str = "Sin nombre"):
+        self.contenido = contenido
+        self.nombre = nombre
+        self._limpiar()
+        self.fecha_analisis = datetime.now()
+    
+    def _limpiar(self):
+        """Limpia el texto (método privado)"""
+        # Eliminar puntuación y convertir a minúsculas
+        texto_limpio = re.sub(r'[^\w\s]', '', self.contenido.lower())
+        self.palabras = texto_limpio.split()
+        self.texto_limpio = texto_limpio
+    
+    def __len__(self):
+        return len(self.palabras)
+    
+    def __str__(self):
+        return f"📄 '{self.nombre}': {len(self.palabras)} palabras"
+
+class AnalizadorTexto:
+    """Sistema de análisis de texto con POO"""
+    
+    def __init__(self):
+        self.textos: List[Texto] = []
+        self.historial: List[Dict] = []
+    
+    def agregar_texto(self, texto: Texto):
+        """Agrega un texto para análisis"""
+        self.textos.append(texto)
+        print(f"✅ Texto agregado: {texto}")
+    
+    # ============================================
+    # MÉTODOS DE ANÁLISIS CON DECORADORES
+    # ============================================
+    
+    @cronometrar
+    @registrar_analisis
+    def frecuencia_palabras(self, texto: Texto) -> Dict[str, int]:
+        """Cuenta frecuencia de palabras usando Counter"""
+        return dict(Counter(texto.palabras))
+    
+    @cronometrar
+    @registrar_analisis
+    def top_palabras(self, texto: Texto, n: int = 5) -> List[Tuple[str, int]]:
+        """Obtiene las n palabras más comunes"""
+        return Counter(texto.palabras).most_common(n)
+    
+    @cronometrar
+    @registrar_analisis
+    def palabras_unicas(self, texto: Texto) -> Set[str]:
+        """Obtiene palabras únicas usando set"""
+        return set(texto.palabras)
+    
+    @cronometrar
+    @registrar_analisis
+    def agrupar_por_longitud(self, texto: Texto) -> Dict[int, List[str]]:
+        """Agrupa palabras por longitud usando defaultdict"""
+        grupos = defaultdict(list)
+        for palabra in texto.palabras:
+            grupos[len(palabra)].append(palabra)
+        return dict(grupos)
+    
+    # ============================================
+    # ANÁLISIS COMPARATIVO CON SETS
+    # ============================================
+    
+    def comparar_textos(self, texto1: Texto, texto2: Texto) -> Dict:
+        """Compara dos textos usando operaciones de conjuntos"""
+        palabras1 = set(texto1.palabras)
+        palabras2 = set(texto2.palabras)
+        
+        return {
+            "ambos": palabras1 & palabras2,  # Intersección
+            "solo_primero": palabras1 - palabras2,  # Diferencia
+            "solo_segundo": palabras2 - palabras1,
+            "todos": palabras1 | palabras2,  # Unión
+            "similitud": len(palabras1 & palabras2) / len(palabras1 | palabras2) if palabras1 | palabras2 else 0
+        }
+    
+    # ============================================
+    # ESTADÍSTICAS COMPLETAS
+    # ============================================
+    
+    @cronometrar
+    def estadisticas_completas(self, texto: Texto) -> Dict:
+        """Genera estadísticas completas del texto"""
+        freq = self.frecuencia_palabras(texto)
+        
+        return {
+            "total_palabras": len(texto),
+            "palabras_unicas": len(self.palabras_unicas(texto)),
+            "longitud_promedio": sum(len(p) for p in texto.palabras) / len(texto) if texto.palabras else 0,
+            "densidad_vocabulario": len(self.palabras_unicas(texto)) / len(texto) if texto.palabras else 0,
+            "top_5": self.top_palabras(texto, 5),
+            "palabra_mas_frecuente": max(freq, key=freq.get) if freq else None,
+            "agrupacion_longitud": self.agrupar_por_longitud(texto),
+            "fecha_analisis": texto.fecha_analisis.isoformat()
+        }
+    
+    def resumen_todos_textos(self) -> Dict:
+        """Resumen de todos los textos analizados"""
+        if not self.textos:
+            return {"total_textos": 0}
+        
+        return {
+            "total_textos": len(self.textos),
+            "textos": [{"nombre": t.nombre, "palabras": len(t)} for t in self.textos],
+            "total_palabras": sum(len(t) for t in self.textos),
+            "promedio_palabras": sum(len(t) for t in self.textos) / len(self.textos)
+        }
+    
+    def __str__(self):
+        return f"📊 Analizador: {len(self.textos)} textos en memoria"
+
+# ============================================
+# DEMOSTRACIÓN COMPLETA
+# ============================================
+
+if __name__ == "__main__":
+    print("=" * 60)
+    print("MINI-PROYECTO DÍA 1: SISTEMA DE ANÁLISIS DE TEXTO CON POO")
+    print("=" * 60)
+    
+    # Crear sistema
+    sistema = AnalizadorTexto()
+    
+    # Crear textos
+    texto1 = Texto(
+        "Python es un lenguaje de programación poderoso y versátil. "
+        "Python es fácil de aprender y tiene una gran comunidad.",
+        "Introducción a Python"
+    )
+    
+    texto2 = Texto(
+        "La programación orientada a objetos es un paradigma de programación "
+        "que utiliza objetos y sus interacciones para diseñar aplicaciones.",
+        "POO Básico"
+    )
+    
+    # Agregar textos
+    sistema.agregar_texto(texto1)
+    sistema.agregar_texto(texto2)
+    
+    # Analizar primer texto
+    print("\n" + "=" * 60)
+    print("📊 ANÁLISIS DEL TEXTO 1")
+    print("=" * 60)
+    
+    stats = sistema.estadisticas_completas(texto1)
+    for clave, valor in stats.items():
+        if clave in ['top_5', 'agrupacion_longitud']:
+            print(f"  {clave}: {dict(list(valor.items())[:3]) if isinstance(valor, dict) else valor}")
+        else:
+            print(f"  {clave}: {valor}")
+    
+    # Comparar textos
+    print("\n" + "=" * 60)
+    print("🔍 COMPARACIÓN DE TEXTOS")
+    print("=" * 60)
+    
+    comparacion = sistema.comparar_textos(texto1, texto2)
+    print(f"  Similitud: {comparacion['similitud']:.2%}")
+    print(f"  Palabras en común: {len(comparacion['ambos'])}")
+    print(f"  Solo en texto 1: {len(comparacion['solo_primero'])}")
+    print(f"  Solo en texto 2: {len(comparacion['solo_segundo'])}")
+    
+    # Resumen general
+    print("\n" + "=" * 60)
+    print("📋 RESUMEN GENERAL")
+    print("=" * 60)
+    
+    resumen = sistema.resumen_todos_textos()
+    print(f"  Total textos: {resumen['total_textos']}")
+    print(f"  Total palabras: {resumen['total_palabras']}")
+    print(f"  Promedio por texto: {resumen['promedio_palabras']:.1f}")
+    
+    # Historial
+    print("\n📋 HISTORIAL DE ANÁLISIS:")
+    for i, entry in enumerate(sistema.historial[-5:], 1):
+        print(f"  {i}. {entry['metodo']}: {entry['resultado'][:60]}...")
 ```
-
-```python
-```python
