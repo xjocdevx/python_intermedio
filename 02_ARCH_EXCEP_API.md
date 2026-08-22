@@ -301,9 +301,16 @@ EJERCICIO 2.2: SISTEMA CON EXCEPCIONES PERSONALIZADAS
 ESENCIA: Clases con manejo de errores y excepciones personalizadas
 """
 
+# ============================================
+# EJERCICIO 2.2: SISTEMA CON EXCEPCIONES PERSONALIZADAS
+# ESENCIA: Clases con manejo de errores y excepciones personalizadas
+# ============================================
+
+# LIBRERÍAS:
+# - datetime: Para manejar fechas y horas
 import logging
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict  # Dict agregado para anotaciones
 
 # ============================================
 # CONFIGURACIÓN DE LOGGING
@@ -312,8 +319,8 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('sistema.log'),
-        logging.StreamHandler()
+        logging.FileHandler('sistema.log'),  # Guarda logs en archivo
+        logging.StreamHandler()  # También muestra en consola
     ]
 )
 logger = logging.getLogger(__name__)
@@ -321,80 +328,113 @@ logger = logging.getLogger(__name__)
 # ============================================
 # EXCEPCIONES PERSONALIZADAS
 # ============================================
+# Jerarquía de excepciones para diferentes tipos de errores del sistema
 class ErrorSistema(Exception):
     """Excepción base del sistema"""
     pass
 
 class ErrorUsuario(ErrorSistema):
-    """Excepción para errores de usuario"""
+    """Excepción para errores relacionados con usuarios"""
     pass
 
 class ErrorValidacion(ErrorSistema):
-    """Excepción para errores de validación"""
+    """Excepción para errores de validación de datos"""
     pass
 
 class ErrorTransaccion(ErrorSistema):
-    """Excepción para errores de transacción"""
+    """Excepción para errores en transacciones"""
     pass
 
 # ============================================
 # CLASE SISTEMA CON EXCEPCIONES
 # ============================================
 class SistemaTransacciones:
-    """Sistema con manejo de excepciones y transacciones"""
-    
+    """
+    Sistema que maneja usuarios y transacciones con validaciones robustas
+    """
     def __init__(self):
+        # Lista para almacenar todas las transacciones
         self.transacciones = []
+        # Diccionario para almacenar usuarios y sus datos
         self.usuarios = {}
-    
+
     def validar_usuario(self, nombre: str) -> bool:
-        """Valida un usuario"""
+        """
+        Valida que un nombre de usuario sea válido
+        Args:
+            nombre: Nombre del usuario a validar
+        Returns:
+            True si es válido, False si no
+        """
         try:
+            # Validación: nombre no vacío y con mínimo 3 caracteres
             if not nombre or len(nombre) < 3:
+                # raise: Lanza excepción personalizada
                 raise ErrorValidacion("Nombre debe tener al menos 3 caracteres")
-            
+
+            # Validación: usuario no debe existir ya
             if nombre in self.usuarios:
                 raise ErrorUsuario(f"Usuario '{nombre}' ya existe")
-            
+
             return True
         except ErrorValidacion as e:
+            # Captura excepción específica y la registra
             logger.error(f"Error de validación: {e}")
             return False
         except ErrorUsuario as e:
             logger.error(f"Error de usuario: {e}")
             return False
-    
+
     def registrar_usuario(self, nombre: str) -> bool:
-        """Registra un nuevo usuario"""
+        """
+        Registra un nuevo usuario en el sistema
+        Args:
+            nombre: Nombre del usuario
+        Returns:
+            True si se registró, False si hay error
+        """
         try:
+            # Llama al método de validación
             if not self.validar_usuario(nombre):
                 return False
-            
+
+            # Agrega usuario al diccionario
             self.usuarios[nombre] = {
                 "nombre": nombre,
-                "fecha_registro": datetime.now(),
+                "fecha_registro": datetime.now(),  # Fecha y hora actual
                 "transacciones": 0
             }
             logger.info(f"Usuario registrado: {nombre}")
             return True
-        
+
         except Exception as e:
+            # Captura cualquier excepción inesperada
+            # critical(): Nivel más alto de logging para errores graves
             logger.critical(f"Error inesperado: {e}")
             return False
-    
+
     def realizar_transaccion(self, usuario: str, monto: float) -> bool:
-        """Realiza una transacción"""
+        """
+        Procesa una transacción financiera
+        Args:
+            usuario: Nombre del usuario
+            monto: Cantidad de dinero
+        Returns:
+            True si se completó, False si hay error
+        """
         try:
-            # Validaciones
+            # Validación 1: Usuario existe
             if usuario not in self.usuarios:
                 raise ErrorUsuario(f"Usuario '{usuario}' no existe")
-            
+
+            # Validación 2: Monto debe ser positivo
             if monto <= 0:
                 raise ErrorValidacion(f"Monto inválido: {monto}")
-            
+
+            # Validación 3: Monto no puede exceder límite
             if monto > 10000:
                 raise ErrorTransaccion(f"Monto excede límite: {monto}")
-            
+
             # Registrar transacción
             transaccion = {
                 "usuario": usuario,
@@ -404,10 +444,10 @@ class SistemaTransacciones:
             }
             self.transacciones.append(transaccion)
             self.usuarios[usuario]["transacciones"] += 1
-            
+
             logger.info(f"Transacción completada: {usuario} - ${monto}")
             return True
-        
+
         except ErrorUsuario as e:
             logger.error(f"Error de usuario: {e}")
             return False
@@ -420,24 +460,37 @@ class SistemaTransacciones:
         except Exception as e:
             logger.critical(f"Error inesperado: {e}")
             return False
-    
+
     def obtener_transacciones_usuario(self, usuario: str) -> List[Dict]:
-        """Obtiene transacciones de un usuario"""
+        """
+        Obtiene todas las transacciones de un usuario específico
+        Args:
+            usuario: Nombre del usuario
+        Returns:
+            Lista de transacciones del usuario
+        """
         try:
             if usuario not in self.usuarios:
                 raise ErrorUsuario(f"Usuario '{usuario}' no existe")
-            
+
+            # List comprehension: Filtra transacciones del usuario
             return [t for t in self.transacciones if t["usuario"] == usuario]
         except ErrorUsuario as e:
             logger.error(f"Error: {e}")
             return []
-    
+
     def estadisticas(self) -> Dict:
-        """Estadísticas del sistema"""
+        """
+        Calcula estadísticas del sistema
+        Returns:
+            Diccionario con estadísticas
+        """
         return {
             "total_usuarios": len(self.usuarios),
             "total_transacciones": len(self.transacciones),
+            # sum(): Suma todos los montos de las transacciones
             "monto_total": sum(t["monto"] for t in self.transacciones),
+            # Dictionary comprehension: Crea dict con transacciones por usuario
             "transacciones_por_usuario": {
                 u: self.usuarios[u]["transacciones"] 
                 for u in self.usuarios
@@ -451,32 +504,33 @@ if __name__ == "__main__":
     print("=" * 60)
     print("SISTEMA DE TRANSACCIONES CON EXCEPCIONES")
     print("=" * 60)
-    
+
     sistema = SistemaTransacciones()
-    
+
     # Registrar usuarios
     print("\n📝 REGISTRANDO USUARIOS:")
     sistema.registrar_usuario("Ana")
     sistema.registrar_usuario("Luis")
     sistema.registrar_usuario("An")  # Error - nombre corto
-    
+
     # Realizar transacciones
     print("\n💰 REALIZANDO TRANSACCIONES:")
     sistema.realizar_transaccion("Ana", 1000)
     sistema.realizar_transaccion("Luis", 500)
     sistema.realizar_transaccion("Ana", 15000)  # Error - excede límite
     sistema.realizar_transaccion("Carlos", 100)  # Error - usuario no existe
-    
+
     # Estadísticas
     print("\n📊 ESTADÍSTICAS:")
     stats = sistema.estadisticas()
     for clave, valor in stats.items():
         print(f"  {clave}: {valor}")
-    
+
     # Transacciones de usuario
     print("\n📋 TRANSACCIONES DE ANA:")
     transacciones = sistema.obtener_transacciones_usuario("Ana")
     for t in transacciones:
+        # strftime(): Formatea la fecha y hora
         print(f"  ${t['monto']} - {t['fecha'].strftime('%H:%M:%S')}")
 ```
 ### EJERCICIO 2.3: Cliente API con POO y Manejo de Errores
