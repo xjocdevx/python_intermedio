@@ -539,7 +539,13 @@ if __name__ == "__main__":
 EJERCICIO 2.3: CLIENTE API CON POO Y MANEJO DE ERRORES
 ESENCIA: Clase para consumir APIs con manejo de excepciones y logging
 """
+# ============================================
+# EJERCICIO 2.3: CLIENTE API CON POO Y MANEJO DE ERRORES
+# ESENCIA: Clase para consumir APIs con manejo de excepciones y logging
+# ============================================
 
+# LIBRERÍAS:
+# - requests: Para hacer peticiones HTTP a APIs
 import requests
 import json
 import logging
@@ -559,46 +565,74 @@ logger = logging.getLogger(__name__)
 # EXCEPCIONES PERSONALIZADAS
 # ============================================
 class ErrorAPI(Exception):
-    """Excepción para errores de API"""
+    """Excepción base para errores de API"""
     pass
 
 class ErrorConexion(ErrorAPI):
-    """Excepción para errores de conexión"""
+    """Excepción para errores de conexión (timeout, red)"""
     pass
 
 class ErrorRespuesta(ErrorAPI):
-    """Excepción para errores en la respuesta"""
+    """Excepción para errores en la respuesta HTTP"""
     pass
 
 # ============================================
 # CLASE CLIENTE API
 # ============================================
 class ClienteAPI:
-    """Cliente para consumir APIs REST"""
-    
+    """
+    Cliente genérico para consumir APIs REST
+    Maneja conexiones, errores y respuestas
+    """
+
     def __init__(self, base_url: str, timeout: int = 10):
+        """
+        Constructor del cliente API
+        Args:
+            base_url: URL base de la API (ej. https://api.example.com)
+            timeout: Tiempo máximo de espera en segundos
+        """
         self.base_url = base_url
         self.timeout = timeout
+        # requests.Session(): Mantiene configuración entre peticiones
         self.sesion = requests.Session()
         logger.info(f"Cliente API inicializado: {base_url}")
-    
+
     def _peticion(self, metodo: str, endpoint: str = "", **kwargs) -> Optional[Dict]:
-        """Método interno para hacer peticiones HTTP"""
+        """
+        Método interno que maneja toda la lógica de peticiones HTTP
+        Args:
+            metodo: Método HTTP (GET, POST, PUT, DELETE)
+            endpoint: Ruta específica del endpoint
+            **kwargs: Argumentos adicionales para requests (params, json, etc.)
+        Returns:
+            Respuesta de la API como diccionario
+        Raises:
+            ErrorConexion: Si hay problemas de red
+            ErrorRespuesta: Si la respuesta HTTP tiene error
+            ErrorAPI: Para otros errores
+        """
+        # Construye URL completa: base_url/endpoint
         url = f"{self.base_url}/{endpoint}" if endpoint else self.base_url
-        
+
         try:
+            # Realiza la petición HTTP con el método especificado
             response = self.sesion.request(
                 metodo, url,
-                timeout=self.timeout,
-                **kwargs
+                timeout=self.timeout,  # Tiempo máximo de espera
+                **kwargs  # Parámetros adicionales
             )
+            # raise_for_status(): Lanza excepción si código HTTP es 4xx o 5xx
             response.raise_for_status()
-            
+
             try:
+                # Intenta parsear respuesta como JSON
                 return response.json()
             except json.JSONDecodeError:
+                # Si no es JSON, retorna texto plano
                 return {"texto": response.text}
-                
+
+        # Captura excepciones específicas de requests
         except requests.exceptions.ConnectionError:
             logger.error(f"Error de conexión a {url}")
             raise ErrorConexion("No se pudo conectar al servidor")
@@ -606,103 +640,146 @@ class ClienteAPI:
             logger.error(f"Timeout en {url}")
             raise ErrorConexion("Tiempo de espera agotado")
         except requests.exceptions.HTTPError as e:
+            # e.response.status_code: Código HTTP del error
             logger.error(f"Error HTTP {e.response.status_code}")
             raise ErrorRespuesta(f"Error HTTP: {e.response.status_code}")
         except Exception as e:
             logger.error(f"Error inesperado: {e}")
             raise ErrorAPI(f"Error: {e}")
-    
+
+    # Métodos públicos para cada verbo HTTP
     def get(self, endpoint: str = "", params: Dict = None) -> Optional[Dict]:
-        """Petición GET"""
+        """Petición GET (obtener datos)"""
         return self._peticion("GET", endpoint, params=params)
-    
+
     def post(self, endpoint: str = "", data: Dict = None) -> Optional[Dict]:
-        """Petición POST"""
+        """Petición POST (crear datos)"""
+        # json=data: Envía datos en el cuerpo de la petición como JSON
         return self._peticion("POST", endpoint, json=data)
-    
+
     def put(self, endpoint: str = "", data: Dict = None) -> Optional[Dict]:
-        """Petición PUT"""
+        """Petición PUT (actualizar datos)"""
         return self._peticion("PUT", endpoint, json=data)
-    
+
     def delete(self, endpoint: str = "") -> Optional[Dict]:
-        """Petición DELETE"""
+        """Petición DELETE (eliminar datos)"""
         return self._peticion("DELETE", endpoint)
 
+# ============================================
+# CLASE PROCESADOR API (HEREDA DE CLIENTEAPI)
+# ============================================
 class ProcesadorAPI(ClienteAPI):
-    """Procesador de datos de API con POO"""
-    
+    """
+    Procesador especializado de datos de API
+    Hereda de ClienteAPI y agrega funcionalidades de procesamiento
+    """
+
     def __init__(self, base_url: str):
+        # super(): Llama al constructor de la clase padre (ClienteAPI)
         super().__init__(base_url)
-        self.datos_procesados = []
-        self.historial = []
-    
+        self.datos_procesados = []  # Almacena datos procesados
+        self.historial = []  # Historial de operaciones
+
     def obtener_usuarios(self) -> List[Dict]:
-        """Obtiene y procesa usuarios"""
+        """
+        Obtiene y procesa la lista de usuarios desde la API
+        Returns:
+            Lista de usuarios con datos relevantes
+        """
         try:
+            # Llama al método get de la clase padre
             datos = self.get("users")
             if not datos:
                 return []
-            
+
+            # Procesa cada usuario extrayendo información relevante
             procesados = []
             for u in datos:
+                # .get(): Obtiene valor o valor por defecto si no existe
                 procesados.append({
                     "id": u.get("id"),
                     "nombre": u.get("name"),
                     "email": u.get("email"),
+                    # Acceso a campos anidados con .get()
                     "ciudad": u.get("address", {}).get("city", "Desconocida"),
                     "empresa": u.get("company", {}).get("name", "Desconocida")
                 })
-            
+
             self.datos_procesados = procesados
             logger.info(f"Procesados {len(procesados)} usuarios")
             self._registrar("usuarios", len(procesados))
             return procesados
-            
+
         except ErrorAPI as e:
             logger.error(f"Error obteniendo usuarios: {e}")
             return []
-    
+
     def obtener_posts(self, usuario_id: Optional[int] = None) -> List[Dict]:
-        """Obtiene posts (opcionalmente de un usuario)"""
+        """
+        Obtiene posts, opcionalmente filtrados por usuario
+        Args:
+            usuario_id: ID del usuario para filtrar (opcional)
+        Returns:
+            Lista de posts
+        """
         try:
+            # params: Parámetros de consulta para la URL (?userId=1)
             params = {"userId": usuario_id} if usuario_id else None
             datos = self.get("posts", params)
-            
+
             if not datos:
                 return []
-            
+
             logger.info(f"Obtenidos {len(datos)} posts")
             self._registrar("posts", len(datos))
             return datos
-            
+
         except ErrorAPI as e:
             logger.error(f"Error obteniendo posts: {e}")
             return []
-    
+
     def obtener_comentarios(self, post_id: int) -> List[Dict]:
-        """Obtiene comentarios de un post"""
+        """
+        Obtiene comentarios de un post específico
+        Args:
+            post_id: ID del post
+        Returns:
+            Lista de comentarios
+        """
         try:
+            # Uso de f-strings para construir URL con variable
             datos = self.get(f"posts/{post_id}/comments")
             logger.info(f"Obtenidos {len(datos)} comentarios")
             return datos
         except ErrorAPI as e:
             logger.error(f"Error obteniendo comentarios: {e}")
             return []
-    
+
     def _registrar(self, operacion: str, cantidad: int):
-        """Registra operación en el historial"""
+        """
+        Método privado para registrar operaciones en el historial
+        Args:
+            operacion: Nombre de la operación
+            cantidad: Cantidad de datos procesados
+        """
         self.historial.append({
             "operacion": operacion,
             "cantidad": cantidad,
+            # datetime.now().isoformat(): Fecha en formato ISO (YYYY-MM-DDTHH:MM:SS)
             "fecha": datetime.now().isoformat()
         })
-    
+
     def estadisticas(self) -> Dict:
-        """Estadísticas del procesador"""
+        """
+        Retorna estadísticas del procesador
+        Returns:
+            Diccionario con estadísticas
+        """
         return {
             "total_operaciones": len(self.historial),
             "datos_procesados": len(self.datos_procesados) if self.datos_procesados else 0,
-            "historial": self.historial[-5:]  # Últimas 5 operaciones
+            # Slicing [-5:]: Obtiene los últimos 5 elementos
+            "historial": self.historial[-5:]
         }
 
 # ============================================
@@ -712,33 +789,34 @@ if __name__ == "__main__":
     print("=" * 60)
     print("CLIENTE API CON POO")
     print("=" * 60)
-    
-    # Crear cliente
+
+    # Crear instancia del procesador
     api = ProcesadorAPI("https://jsonplaceholder.typicode.com")
-    
+
     try:
         # Obtener usuarios
         print("\n📥 OBTENIENDO USUARIOS:")
         usuarios = api.obtener_usuarios()
         if usuarios:
             print(f"  Total: {len(usuarios)}")
+            # Slicing [:3]: Muestra solo los primeros 3
             for u in usuarios[:3]:
                 print(f"  - {u['nombre']} ({u['ciudad']})")
-        
+
         # Obtener posts
         print("\n📥 OBTENIENDO POSTS:")
-        posts = api.obtener_posts(1)
+        posts = api.obtener_posts(1)  # Obtiene posts del usuario 1
         if posts:
             print(f"  Total: {len(posts)}")
             for p in posts[:2]:
-                print(f"  - {p['title'][:50]}...")
-        
+                print(f"  - {p['title'][:50]}...")  # Trunca título a 50 caracteres
+
         # Estadísticas
         print("\n📊 ESTADÍSTICAS:")
         stats = api.estadisticas()
         for clave, valor in stats.items():
             print(f"  {clave}: {valor}")
-            
+
     except ErrorAPI as e:
         print(f"❌ Error de API: {e}")
 ```
