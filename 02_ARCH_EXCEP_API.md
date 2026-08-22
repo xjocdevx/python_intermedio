@@ -9,6 +9,17 @@ EJERCICIO 2.1: GESTOR DE ARCHIVOS CON POO
 ESENCIA: Clase que maneja archivos TXT, CSV y JSON con manejo de errores
 """
 
+# ============================================
+# EJERCICIO 2.1: GESTOR DE ARCHIVOS CON POO
+# ESENCIA: Clase que maneja archivos TXT, CSV y JSON con manejo de errores
+# ============================================
+
+# LIBRERÍAS UTILIZADAS:
+# - json: Para leer/escribir archivos JSON
+# - csv: Para leer/escribir archivos CSV usando diccionarios
+# - pathlib.Path: Para manejar rutas de archivos de forma orientada a objetos
+# - typing: Para anotaciones de tipo (List, Dict, Optional, Any)
+# - logging: Para registrar eventos y errores del sistema
 import json
 import csv
 from pathlib import Path
@@ -18,109 +29,169 @@ import logging
 # ============================================
 # CONFIGURACIÓN DE LOGGING
 # ============================================
+# Configura el sistema de logging para mostrar en consola
+# Formato: fecha/hora - nivel - mensaje
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.INFO,  # Nivel de detalle: INFO, DEBUG, ERROR, etc.
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # Crea un logger específico para este módulo
 
 # ============================================
 # EXCEPCIONES PERSONALIZADAS
 # ============================================
+# Se crean clases de excepción para manejar errores específicos de archivos
 class ErrorArchivo(Exception):
     """Excepción base para errores de archivos"""
-    pass
+    pass  # pass: instrucción que no hace nada, permite definir una clase vacía
 
 class ErrorFormatoArchivo(ErrorArchivo):
-    """Excepción para errores de formato"""
+    """Excepción para errores de formato (ej. JSON inválido)"""
     pass
 
 # ============================================
 # CLASE GESTOR DE ARCHIVOS
 # ============================================
 class GestorArchivos:
-    """Clase para manejar archivos en múltiples formatos"""
-    
+    """Clase para manejar archivos en múltiples formatos (TXT, CSV, JSON)"""
+
     def __init__(self, directorio: str = "data"):
+        """
+        Constructor de la clase
+        Args:
+            directorio: Ruta donde se almacenarán los archivos
+        """
+        # Path(): Convierte string en objeto Path para manejo avanzado de rutas
         self.directorio = Path(directorio)
+        # mkdir(): Crea el directorio si no existe
+        # exist_ok=True: No lanza error si ya existe
         self.directorio.mkdir(exist_ok=True)
         logger.info(f"Directorio creado: {self.directorio}")
-    
+
     # ============================================
     # ARCHIVOS TXT
     # ============================================
     def leer_txt(self, nombre: str) -> Optional[str]:
-        """Lee archivo TXT con manejo de errores"""
-        ruta = self.directorio / nombre
+        """
+        Lee un archivo TXT y retorna su contenido como string
+        Args:
+            nombre: Nombre del archivo
+        Returns:
+            Contenido del archivo o None si hay error
+        Raises:
+            ErrorArchivo: Si el archivo no existe o hay error de lectura
+        """
+        ruta = self.directorio / nombre  # /: Une rutas con Path
         try:
+            # open(): Abre el archivo en modo lectura ('r')
+            # with: Maneja el contexto, cierra automáticamente el archivo
+            # encoding='utf-8': Especifica codificación para caracteres especiales
             with open(ruta, 'r', encoding='utf-8') as f:
-                contenido = f.read()
+                contenido = f.read()  # read(): Lee todo el contenido
             logger.info(f"TXT leído: {nombre}")
             return contenido
         except FileNotFoundError:
+            # raise: Lanza una excepción personalizada
             logger.error(f"Archivo no encontrado: {nombre}")
             raise ErrorArchivo(f"El archivo {nombre} no existe")
         except Exception as e:
+            # Captura cualquier otra excepción
             logger.error(f"Error leyendo {nombre}: {e}")
             raise ErrorArchivo(f"Error al leer {nombre}")
-    
+
     def escribir_txt(self, nombre: str, contenido: str) -> bool:
-        """Escribe archivo TXT"""
+        """
+        Escribe contenido en un archivo TXT
+        Args:
+            nombre: Nombre del archivo
+            contenido: Texto a escribir
+        Returns:
+            True si se escribió correctamente, False si hay error
+        """
         ruta = self.directorio / nombre
         try:
+            # 'w': Modo escritura (sobrescribe si existe)
             with open(ruta, 'w', encoding='utf-8') as f:
-                f.write(contenido)
+                f.write(contenido)  # write(): Escribe el contenido
             logger.info(f"TXT escrito: {nombre}")
             return True
         except Exception as e:
             logger.error(f"Error escribiendo {nombre}: {e}")
             return False
-    
+
     # ============================================
     # ARCHIVOS CSV
     # ============================================
     def leer_csv(self, nombre: str) -> List[Dict]:
-        """Lee archivo CSV como lista de diccionarios"""
+        """
+        Lee un archivo CSV y lo convierte en lista de diccionarios
+        Args:
+            nombre: Nombre del archivo
+        Returns:
+            Lista de diccionarios con los datos, o lista vacía si hay error
+        """
         ruta = self.directorio / nombre
         try:
             with open(ruta, 'r', encoding='utf-8') as f:
+                # csv.DictReader(): Lee CSV usando la primera fila como claves
                 reader = csv.DictReader(f)
+                # list(): Convierte el objeto reader en lista de diccionarios
                 datos = list(reader)
             logger.info(f"CSV leído: {len(datos)} registros")
             return datos
         except FileNotFoundError:
             logger.error(f"CSV no encontrado: {nombre}")
-            return []
+            return []  # Retorna lista vacía en caso de error
         except Exception as e:
             logger.error(f"Error leyendo CSV {nombre}: {e}")
             return []
-    
+
     def escribir_csv(self, nombre: str, datos: List[Dict]) -> bool:
-        """Escribe lista de diccionarios a CSV"""
+        """
+        Escribe una lista de diccionarios en un archivo CSV
+        Args:
+            nombre: Nombre del archivo
+            datos: Lista de diccionarios con los datos
+        Returns:
+            True si se escribió correctamente, False si hay error
+        """
         if not datos:
+            # warning(): Nivel de logging para advertencias
             logger.warning("No hay datos para guardar")
             return False
-        
+
         ruta = self.directorio / nombre
         try:
+            # newline='': Evita líneas en blanco extra en Windows
             with open(ruta, 'w', encoding='utf-8', newline='') as f:
+                # fieldnames: Toma las claves del primer diccionario como encabezados
                 writer = csv.DictWriter(f, fieldnames=datos[0].keys())
-                writer.writeheader()
-                writer.writerows(datos)
+                writer.writeheader()  # Escribe la primera fila (encabezados)
+                writer.writerows(datos)  # Escribe todas las filas
             logger.info(f"CSV guardado: {len(datos)} registros")
             return True
         except Exception as e:
             logger.error(f"Error guardando CSV {nombre}: {e}")
             return False
-    
+
     # ============================================
     # ARCHIVOS JSON
     # ============================================
     def leer_json(self, nombre: str) -> Optional[Dict]:
-        """Lee archivo JSON"""
+        """
+        Lee un archivo JSON y lo convierte en diccionario
+        Args:
+            nombre: Nombre del archivo
+        Returns:
+            Diccionario con los datos
+        Raises:
+            ErrorArchivo: Si el archivo no existe
+            ErrorFormatoArchivo: Si el JSON tiene formato inválido
+        """
         ruta = self.directorio / nombre
         try:
             with open(ruta, 'r', encoding='utf-8') as f:
+                # json.load(): Convierte JSON a objeto Python (dict/list)
                 datos = json.load(f)
             logger.info(f"JSON leído: {nombre}")
             return datos
@@ -128,48 +199,80 @@ class GestorArchivos:
             logger.error(f"JSON no encontrado: {nombre}")
             raise ErrorArchivo(f"El archivo {nombre} no existe")
         except json.JSONDecodeError as e:
+            # Excepción específica de la librería json
             logger.error(f"Error en formato JSON: {e}")
             raise ErrorFormatoArchivo(f"Formato JSON inválido en {nombre}")
-    
+
     def escribir_json(self, nombre: str, datos: Any) -> bool:
-        """Escribe archivo JSON"""
+        """
+        Escribe datos en un archivo JSON
+        Args:
+            nombre: Nombre del archivo
+            datos: Datos a guardar (dict, list, etc.)
+        Returns:
+            True si se escribió correctamente, False si hay error
+        """
         ruta = self.directorio / nombre
         try:
             with open(ruta, 'w', encoding='utf-8') as f:
+                # json.dump(): Convierte objeto Python a JSON y lo escribe
+                # indent=2: Formatea con sangría para legibilidad
+                # ensure_ascii=False: Permite caracteres Unicode (ñ, acentos)
                 json.dump(datos, f, indent=2, ensure_ascii=False)
             logger.info(f"JSON guardado: {nombre}")
             return True
         except Exception as e:
             logger.error(f"Error guardando JSON {nombre}: {e}")
             return False
-    
+
     # ============================================
     # MÉTODOS UTILITARIOS
     # ============================================
     def listar_archivos(self, patron: str = "*") -> List[str]:
-        """Lista archivos en el directorio"""
+        """
+        Lista los archivos en el directorio que coinciden con un patrón
+        Args:
+            patron: Patrón de búsqueda (ej. "*.txt", "*.csv")
+        Returns:
+            Lista de nombres de archivos
+        """
+        # glob(): Retorna un generador con todos los archivos que coinciden
+        # List comprehension: [f.name for f in ...] crea lista de nombres
         return [f.name for f in self.directorio.glob(patron)]
-    
+
     def existe(self, nombre: str) -> bool:
-        """Verifica si un archivo existe"""
+        """
+        Verifica si un archivo existe en el directorio
+        Args:
+            nombre: Nombre del archivo
+        Returns:
+            True si existe, False si no
+        """
+        # exists(): Método de Path que verifica existencia
         return (self.directorio / nombre).exists()
-    
+
     def __str__(self):
+        """
+        Método especial que define cómo se representa el objeto como string
+        Se invoca con print() o str()
+        """
         return f"📁 Gestor: {self.directorio} ({len(self.listar_archivos())} archivos)"
 
 # ============================================
 # DEMOSTRACIÓN
 # ============================================
+# __name__ == "__main__": Esta condición ejecuta el código solo si el script
+# se ejecuta directamente, no si se importa como módulo
 if __name__ == "__main__":
-    # Crear gestor
+    # Crear instancia del gestor
     gestor = GestorArchivos()
-    
+
     # Probar TXT
     print("📄 ARCHIVOS TXT:")
     gestor.escribir_txt("ejemplo.txt", "Contenido de prueba")
     contenido = gestor.leer_txt("ejemplo.txt")
     print(f"  Contenido: {contenido}")
-    
+
     # Probar CSV
     print("\n📊 ARCHIVOS CSV:")
     datos = [
@@ -179,13 +282,13 @@ if __name__ == "__main__":
     gestor.escribir_csv("personas.csv", datos)
     leidos = gestor.leer_csv("personas.csv")
     print(f"  Datos: {leidos}")
-    
+
     # Probar JSON
     print("\n🔷 ARCHIVOS JSON:")
     gestor.escribir_json("persona.json", {"nombre": "Ana", "edad": 25})
     datos_json = gestor.leer_json("persona.json")
     print(f"  Datos: {datos_json}")
-    
+
     # Listar archivos
     print(f"\n📁 Archivos en {gestor}:")
     for archivo in gestor.listar_archivos():
