@@ -1,4 +1,4 @@
-📁 Backend API con PostgreSQL
+# 📁 Backend API con PostgreSQL
 📋 Índice
 
     Instalación de Dependencias
@@ -12,7 +12,8 @@
     Ejemplos (1-20)
 
 Instalación de Dependencias
-bash
+```bash
+api_exercises
 
 # Instalar todas las dependencias del archivo
 pip install -r requirements.txt
@@ -22,8 +23,8 @@ pip3 install -r requirements.txt
 
 # En Windows (PowerShell)
 python -m pip install -r requirements.txt
-
-📁 Estructura del Backend - API REST
+```
+### 📁 Estructura del Backend - API REST
 ```text
 
 fastapi_postgresql_examples/
@@ -58,10 +59,10 @@ fastapi_postgresql_examples/
 ├── requirements.txt
 └── .env
 ```
-🔧 Configuración Inicial
+### 🔧 Configuración Inicial
 ```text
 requirements.txt
-bash
+```bash
 
 fastapi==0.104.1
 uvicorn==0.24.0
@@ -73,7 +74,7 @@ passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
 websockets==12.0
 ```
-.env
+### .env
 ```bash
 
 DB_HOST=localhost
@@ -83,9 +84,9 @@ DB_NAME=api_exercises
 DB_PORT=5432
 SECRET_KEY=mi_secreto_super_seguro
 ```
-📄 Archivos de Configuración
+### 📄 Archivos de Configuración
 config.py
-python
+```python
 
 import os
 from dotenv import load_dotenv
@@ -103,9 +104,9 @@ DB_CONFIG = {
 SECRET_KEY = os.getenv('SECRET_KEY', 'mi_secreto_dev')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-database.py
-python
+```
+### database.py
+```python
 
 import psycopg2
 from psycopg2 import Error
@@ -167,9 +168,9 @@ def init_database():
     cursor.close()
     conn.close()
     print("✅ Base de datos PostgreSQL inicializada")
-
-models.py
-python
+```
+### models.py
+```python
 
 from pydantic import BaseModel, Field, validator
 from typing import Optional
@@ -240,10 +241,10 @@ class Token(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
-
-📝 Ejemplos (1-20)
-ejemplos/01_hola_mundo.py
-python
+```
+### 📝 Ejemplos (1-20)
+### ejemplos/01_hola_mundo.py
+```python
 
 """
 Ejemplo 1: Hola Mundo con FastAPI
@@ -265,9 +266,9 @@ def health_check():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
+```
 ejemplos/02_crud_basico.py
-python
+```python
 
 """
 Ejemplo 2: CRUD básico con PostgreSQL
@@ -410,9 +411,9 @@ def eliminar_producto(id: int):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
+```
 ejemplos/03_con_db.py
-python
+```python
 
 """
 Ejemplo 3: Conexión a PostgreSQL
@@ -504,9 +505,9 @@ def get_usuario(id: int):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
+```
 ejemplos/04_modelos_pydantic.py
-python
+```python
 
 """
 Ejemplo 4: Uso de modelos Pydantic
@@ -585,7 +586,7 @@ def validar_email(email: EmailStr):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
+```
 ejemplos/05_path_params.py
 python
 
