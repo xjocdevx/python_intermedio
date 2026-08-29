@@ -365,7 +365,7 @@ if __name__ == "__main__":
     print(f"\n✅ {visualizador}")
     print(f"  Gráficos guardados en carpeta 'graficos/'")
 ```
-PROYECTO FINAL: Sistema de Dashboard de Ventas con POO
+### PROYECTO FINAL: Sistema de Dashboard de Ventas con POO
 ```python
 """
 PROYECTO FINAL: DASHBOARD DE VENTAS CON POO
@@ -436,7 +436,7 @@ class Venta:
     def __init__(self, producto_id: int, cantidad: int, fecha: str, vendedor: str):
         self.producto_id = producto_id
         self.cantidad = cantidad
-        self.fecha = datetime.strptime(fecha, "%Y-%m-%d")
+        self.fecha = datetime.strptime(fecha, "%Y-%m-%d")  # Convertir a datetime
         self.vendedor = vendedor
     
     def to_dict(self) -> Dict:
@@ -486,7 +486,9 @@ class Tienda:
         for _ in range(n_ventas):
             producto_id = np.random.randint(1, n_productos+1)
             cantidad = np.random.randint(1, 10)
-            fecha = np.random.choice(fechas).strftime('%Y-%m-%d')
+            # CORRECCIÓN: Convertir numpy.datetime64 a datetime de Python
+            fecha_obj = fechas[np.random.randint(0, len(fechas))].to_pydatetime()
+            fecha = fecha_obj.strftime('%Y-%m-%d')
             vendedor = np.random.choice(vendedores)
             self.registrar_venta(Venta(producto_id, cantidad, fecha, vendedor))
         
@@ -648,9 +650,21 @@ class GestorArchivosDashboard:
     
     def guardar_analisis(self, analisis: Dict, timestamp: str):
         """Guarda resultados del análisis"""
+        # Convertir valores que no son serializables a JSON
+        analisis_serializable = {}
+        for clave, valor in analisis.items():
+            if isinstance(valor, (np.integer, np.floating)):
+                analisis_serializable[clave] = float(valor)
+            elif isinstance(valor, pd.Series):
+                analisis_serializable[clave] = valor.to_dict()
+            elif isinstance(valor, pd.DataFrame):
+                analisis_serializable[clave] = valor.to_dict()
+            else:
+                analisis_serializable[clave] = valor
+        
         archivo = self.directorio / f"analisis_{timestamp}.json"
         with open(archivo, 'w', encoding='utf-8') as f:
-            json.dump(analisis, f, indent=2, ensure_ascii=False, default=str)
+            json.dump(analisis_serializable, f, indent=2, ensure_ascii=False, default=str)
         logger.info(f"Análisis guardado: {archivo}")
 
 # ============================================
@@ -683,7 +697,10 @@ def main():
         print("  Resumen:")
         for clave, valor in resumen.items():
             if isinstance(valor, float):
-                print(f"    {clave}: ${valor:,.2f}" if 'total' in clave or 'margen' in clave else f"    {clave}: {valor:,.2f}")
+                if 'total' in clave or 'margen' in clave:
+                    print(f"    {clave}: ${valor:,.2f}")
+                else:
+                    print(f"    {clave}: {valor:,.2f}")
             else:
                 print(f"    {clave}: {valor}")
         
@@ -692,6 +709,7 @@ def main():
         visualizador = VisualizadorDashboard(df_combinado)
         fig = visualizador.generar_dashboard()
         fig.savefig('graficos/dashboard_final.png', dpi=150, bbox_inches='tight')
+        plt.close(fig)  # Cerrar la figura para liberar memoria
         print("  Dashboard guardado: graficos/dashboard_final.png")
         
         # 5. Guardar datos
@@ -709,8 +727,10 @@ def main():
         
     except Exception as e:
         logger.critical(f"Error en el proyecto: {e}")
+        import traceback
+        traceback.print_exc()
         raise
 
 if __name__ == "__main__":
     main()
-    ```
+```
