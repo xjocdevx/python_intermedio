@@ -59,6 +59,7 @@ fastapi_postgresql_examples/
 └── .env
 ```
 🔧 Configuración Inicial
+```text
 requirements.txt
 bash
 
@@ -71,9 +72,9 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
 websockets==12.0
-
+```
 .env
-bash
+```bash
 
 DB_HOST=localhost
 DB_USER=postgres
@@ -81,7 +82,7 @@ DB_PASSWORD=tu_password
 DB_NAME=api_exercises
 DB_PORT=5432
 SECRET_KEY=mi_secreto_super_seguro
-
+```
 📄 Archivos de Configuración
 config.py
 python
