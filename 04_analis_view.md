@@ -2,7 +2,7 @@
 DÍA 4: ANÁLISIS DE DATOS Y PROYECTO FINAL CON POO
 OBJETIVO: Integrar Pandas y Matplotlib con POO para análisis y visualización de datos.
 EJERCICIO 4.1: Sistema de Análisis con Pandas y POO
-python
+```python
 """
 EJERCICIO 4.1: SISTEMA DE ANÁLISIS CON PANDAS Y POO
 ESENCIA: Clase que usa Pandas para análisis de datos
@@ -178,8 +178,10 @@ if __name__ == "__main__":
     resumen = analizador.resumen_ejecutivo()
     for clave, valor in resumen.items():
         print(f"  {clave}: {valor}")
-EJERCICIO 4.2: Sistema de Visualización con Matplotlib y POO
-python
+```
+### EJERCICIO 4.2: Sistema de Visualización con Matplotlib y POO
+```python
+
 """
 EJERCICIO 4.2: SISTEMA DE VISUALIZACIÓN CON MATPLOTLIB Y POO
 ESENCIA: Clase que genera gráficos automáticos a partir de datos
@@ -362,8 +364,9 @@ if __name__ == "__main__":
     
     print(f"\n✅ {visualizador}")
     print(f"  Gráficos guardados en carpeta 'graficos/'")
+```
 PROYECTO FINAL: Sistema de Dashboard de Ventas con POO
-python
+```python
 """
 PROYECTO FINAL: DASHBOARD DE VENTAS CON POO
 ESENCIA: Sistema completo que integra POO, Pandas, Matplotlib, archivos y APIs
@@ -710,4 +713,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+    ```
