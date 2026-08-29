@@ -24,7 +24,7 @@ pip3 install -r requirements.txt
 python -m pip install -r requirements.txt
 
 📁 Estructura del Backend - API REST
-text
+```text
 
 fastapi_postgresql_examples/
 │
@@ -57,7 +57,7 @@ fastapi_postgresql_examples/
 │
 ├── requirements.txt
 └── .env
-
+```
 🔧 Configuración Inicial
 requirements.txt
 bash
