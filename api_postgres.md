@@ -78,6 +78,13 @@ api_exercises
 # Instalar todas las dependencias del archivo
 pip install -r requirements.txt
 
+# en caso de que salga error seguir estos pasos
+          # Crear un entorno virtual en la carpeta .venv
+          python3 -m venv .venv
+          # Activar el entorno
+          source .venv/bin/activate
+
+# Instalar dependencias dentro del entorno
 # En sistemas Linux/Mac a veces necesitas pip3
 pip3 install -r requirements.txt
 
@@ -126,6 +133,9 @@ def get_db_connection():
 def init_database():
     """Inicializa tablas necesarias en PostgreSQL"""
     conn = get_db_connection()
+    if conn is None:
+        raise RuntimeError("No se pudo conectar a PostgreSQL")
+
     cursor = conn.cursor()
     
     # Tabla de usuarios
@@ -169,6 +179,10 @@ def init_database():
     cursor.close()
     conn.close()
     print("✅ Base de datos PostgreSQL inicializada")
+
+
+if __name__ == "__main__":
+    init_database()
 ```
 ### models.py
 ```python
