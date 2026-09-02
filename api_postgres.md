@@ -48,8 +48,8 @@ fastapi_postgresql_examples/
 ```
 ### 🔧 Configuración Inicial
 
-requirements.txt
-```bash
+### requirements.txt
+```python
 
 fastapi==0.104.1
 uvicorn==0.24.0
@@ -62,7 +62,7 @@ python-multipart==0.0.6
 websockets==12.0
 ```
 ### .env
-```bash
+```python
 
 DB_HOST=localhost
 DB_USER=postgres
