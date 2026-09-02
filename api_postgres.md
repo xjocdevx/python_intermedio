@@ -62,7 +62,7 @@ python-multipart==0.0.6
 websockets==12.0
 ```
 ### .env
-```python
+```Bash
 
 DB_HOST=localhost
 DB_USER=postgres
