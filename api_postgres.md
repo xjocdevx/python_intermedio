@@ -62,7 +62,7 @@ python-multipart==0.0.6
 websockets==12.0
 ```
 ### .env
-```Bash
+```python
 
 DB_HOST=localhost
 DB_USER=postgres
@@ -268,7 +268,7 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
-ejemplos/02_crud_basico.py
+### ejemplos/02_crud_basico.py
 ```python
 
 """
@@ -413,7 +413,7 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
 ```
-ejemplos/03_con_db.py
+### ejemplos/03_con_db.py
 ```python
 
 """
@@ -507,7 +507,7 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
 ```
-ejemplos/04_modelos_pydantic.py
+### ejemplos/04_modelos_pydantic.py
 ```python
 
 """
@@ -588,8 +588,8 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
 ```
-ejemplos/05_path_params.py
-python
+### ejemplos/05_path_params.py
+```python
 
 """
 Ejemplo 5: Parámetros de ruta (Path Parameters)
@@ -649,10 +649,10 @@ def validar_codigo(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
+```
+### ejemplos/06_query_params.py
 
-ejemplos/06_query_params.py
-python
-
+```python
 """
 Ejemplo 6: Parámetros de consulta (Query Parameters)
 Filtros, paginación y opciones en la URL
@@ -738,9 +738,9 @@ def old_endpoint(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/07_body_request.py
-python
+```
+#### ejemplos/07_body_request.py
+```python
 
 """
 Ejemplo 7: Request Body (JSON)
@@ -829,9 +829,9 @@ def actualizar_usuario(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/08_validaciones.py
-python
+```
+### ejemplos/08_validaciones.py
+```python
 
 """
 Ejemplo 8: Validaciones avanzadas
@@ -909,9 +909,9 @@ def crear_con_body(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/09_relaciones_join.py
-python
+```
+### ejemplos/09_relaciones_join.py
+```python
 
 """
 Ejemplo 9: Relaciones y JOINs en PostgreSQL
@@ -1122,9 +1122,9 @@ def top_usuarios(limit: int = 10):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/10_paginacion.py
-python
+```
+### ejemplos/10_paginacion.py
+```python
 
 """
 Ejemplo 10: Paginación profesional
@@ -1324,9 +1324,9 @@ def get_productos_paginados(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/11_filtros_avanzados.py
-python
+```
+### ejemplos/11_filtros_avanzados.py
+```python
 
 """
 Ejemplo 11: Filtros avanzados y búsqueda
@@ -1498,9 +1498,9 @@ def buscar_ventas(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/12_operaciones_masivas.py
-python
+```
+### ejemplos/12_operaciones_masivas.py
+```python
 
 """
 Ejemplo 12: Operaciones masivas con PostgreSQL
@@ -1605,9 +1605,9 @@ def actualizar_precios_masivo(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/13_autenticacion_jwt.py
-python
+```
+### ejemplos/13_autenticacion_jwt.py
+```python
 
 """
 Ejemplo 13: Autenticación JWT
@@ -1779,9 +1779,9 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/14_dependencias.py
-python
+```
+### ejemplos/14_dependencias.py
+```python
 
 """
 Ejemplo 14: Dependencias en FastAPI
@@ -1862,9 +1862,9 @@ def search(commons: CommonQueryParams = Depends()):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/15_middleware.py
-python
+```
+### ejemplos/15_middleware.py
+```python
 
 """
 Ejemplo 15: Middleware en FastAPI
@@ -2052,9 +2052,9 @@ def obtener_producto(id: int):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/17_upload_files.py
-python
+```
+### ejemplos/17_upload_files.py
+```python
 
 """
 Ejemplo 17: Subida de archivos
@@ -2182,9 +2182,9 @@ async def list_files():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/18_background_tasks.py
-python
+```
+### ejemplos/18_background_tasks.py
+```python
 
 """
 Ejemplo 18: Tareas en segundo plano
@@ -2287,9 +2287,9 @@ async def health_check(background_tasks: BackgroundTasks):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-ejemplos/19_websocket.py
-python
+```
+### ejemplos/19_websocket.py
+```python
 
 """
 Ejemplo 19: WebSocket
@@ -2456,9 +2456,9 @@ if __name__ == "__main__":
     import uvicorn
     from datetime import datetime
     uvicorn.run(app, port=8000)
-
-ejemplos/20_completo_ventas.py
-python
+```
+### ejemplos/20_completo_ventas.py
+```python
 
 """
 Ejemplo 20: API completa de ventas
@@ -2827,8 +2827,8 @@ def reporte_ventas(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, port=8000)
-
-🚀 Cómo ejecutar
+```
+### 🚀 Cómo ejecutar
 
     Instalar PostgreSQL en tu sistema
 
