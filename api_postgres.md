@@ -47,7 +47,7 @@ fastapi_postgresql_examples/
 └── .env
 ```
 ### 🔧 Configuración Inicial
-```text
+
 requirements.txt
 ```bash
 
