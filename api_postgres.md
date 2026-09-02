@@ -1,29 +1,16 @@
 # 📁 Backend API con PostgreSQL
 📋 Índice
 
-    Instalación de Dependencias
+  1. Estructura del Proyecto
 
-    Estructura del Proyecto
+  2. Configuración Inicial
 
-    Configuración Inicial
+  3. Archivos de Configuración
 
-    Archivos de Configuración
+  4. Instalación de Dependencias
 
-    Ejemplos (1-20)
+  5. Ejemplos (1-20)
 
-Instalación de Dependencias
-```bash
-api_exercises
-
-# Instalar todas las dependencias del archivo
-pip install -r requirements.txt
-
-# En sistemas Linux/Mac a veces necesitas pip3
-pip3 install -r requirements.txt
-
-# En Windows (PowerShell)
-python -m pip install -r requirements.txt
-```
 ### 📁 Estructura del Backend - API REST
 ```text
 
@@ -84,6 +71,20 @@ DB_NAME=api_exercises
 DB_PORT=5432
 SECRET_KEY=mi_secreto_super_seguro
 ```
+### Instalación de Dependencias
+```bash
+api_exercises
+
+# Instalar todas las dependencias del archivo
+pip install -r requirements.txt
+
+# En sistemas Linux/Mac a veces necesitas pip3
+pip3 install -r requirements.txt
+
+# En Windows (PowerShell)
+python -m pip install -r requirements.txt
+```
+
 ### 📄 Archivos de Configuración
 config.py
 ```python
