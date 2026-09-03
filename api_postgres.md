@@ -93,6 +93,7 @@ pip3 install -r requirements.txt
 
 # En Windows (PowerShell)
 python -m pip install -r requirements.txt
+
 ```
 
 ### 📄 Archivos de Configuración
