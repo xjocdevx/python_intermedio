@@ -81,8 +81,11 @@ pip install -r requirements.txt
 # en caso de que salga error seguir estos pasos
           # Crear un entorno virtual en la carpeta .venv
           python3 -m venv .venv
-          # Activar el entorno
+          # Activar el entorno para LINUX
           source .venv/bin/activate
+          # Activar el entorno para WINDOWS
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+          .\.venv\Scripts\Activate.ps1
 
 # Instalar dependencias dentro del entorno
 # En sistemas Linux/Mac a veces necesitas pip3
